@@ -1,0 +1,53 @@
+packages:
+  - apps/*
+  - packages/*
+
+linkWorkspacePackages: true
+autoInstallPeers: true
+
+# DSH 0.1.2-rc.1 publishes its interface packages on the `next` tag while
+# several peer ranges start at the future stable 0.1.2. Resolve the complete
+# current release family explicitly until those peer ranges are corrected.
+overrides:
+  '@deepseek-ai/cordis-plugin-hmr': 1.0.17
+  '@deepseek-ai/cordis-plugin-group': 1.0.2
+  '@deepseek-ai/dsh': 0.1.2-rc.1
+  '@deepseek-ai/dsh-anonymous-user-id': 0.1.2-rc.1
+  '@deepseek-ai/dsh-attachment': 0.1.2-rc.1
+  '@deepseek-ai/dsh-authorization': 0.1.2-rc.1
+  '@deepseek-ai/dsh-bash-local': 0.1.2-rc.1
+  '@deepseek-ai/dsh-code-runtime': 0.1.2-rc.1
+  '@deepseek-ai/dsh-compaction': 0.1.2-rc.1
+  '@deepseek-ai/dsh-fs': 0.1.2-rc.1
+  '@deepseek-ai/dsh-hook-protocol': 0.1.2-rc.1
+  '@deepseek-ai/dsh-invariants': 0.1.2-rc.1
+  '@deepseek-ai/dsh-jobs': 0.1.2-rc.1
+  '@deepseek-ai/dsh-output-retention': 0.1.2-rc.1
+  '@deepseek-ai/dsh-sandbox': 0.1.2-rc.1
+  '@deepseek-ai/dsh-scope': 0.1.2-rc.1
+  '@deepseek-ai/dsh-sdk-protocol': 0.1.2-rc.1
+  '@deepseek-ai/dsh-session': 0.1.2-rc.1
+  '@deepseek-ai/dsh-session-persistence': 0.1.2-rc.1
+  '@deepseek-ai/dsh-session-projection': 0.1.2-rc.1
+  '@deepseek-ai/dsh-session-query': 0.1.2-rc.1
+  '@deepseek-ai/dsh-session-telemetry': 0.1.2-rc.1
+  '@deepseek-ai/dsh-session-title-llm': 0.1.2-rc.1
+  '@deepseek-ai/dsh-settings': 0.1.2-rc.1
+  '@deepseek-ai/dsh-shell': 0.1.2-rc.1
+  '@deepseek-ai/dsh-spill': 0.1.2-rc.1
+  '@deepseek-ai/dsh-subagent-in-process-driver': 0.1.2-rc.1
+  '@deepseek-ai/dsh-timeout': 0.1.2-rc.1
+  '@deepseek-ai/dsh-util-time': 0.1.2-rc.1
+  '@deepseek-ai/dsh-util-workspace-path': 0.1.2-rc.1
+  '@deepseek-ai/dsh-workflow': 0.1.2-rc.1
+  react: 19.3.0
+  react-dom: 19.3.0
+
+allowBuilds:
+  '@deepseek-ai/dsh-subprocess-local': true
+  '@google/genai': false
+  esbuild: true
+  koffi: true
+  node-pty: true
+  protobufjs: false
+  workerd: true

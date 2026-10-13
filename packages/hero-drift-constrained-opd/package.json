@@ -1,0 +1,10 @@
+{
+  "name": "@hero/drift-constrained-opd",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "python:test": "uv run --project python --python 3.12 pytest -c python/pyproject.toml python/tests stream/tests",
+    "python:validate": "uv run --project python --python 3.12 python -m compileall -q python/src python/tests stream"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "hero-research",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "HERD: Harness-Evolving Recursive Distillation for Continual Learning research implementation",
+  "packageManager": "pnpm@11.12.0",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "build": "tsc -b && pnpm --filter @hero/console build",
+    "check": "pnpm build && pnpm test && pnpm eval:test && pnpm opd:test && pnpm opd:validate && pnpm analysis:test",
+    "analysis:test": "python3 -m unittest discover -s experiments/code/tests && python3 -m unittest discover -s scripts/tests",
+    "check:integration": "pnpm model:smoke && pnpm dsh:smoke",
+    "eval:test": "uv run --locked --project packages/evaluator/python --python 3.12 pytest packages/evaluator/python/tests",
+    "dataset:select": "pnpm --filter @hero/data-preprocessing build && node packages/hero-data-preprocessing/dist/cli.js --config config/datasets/trace-plus-17.json",
+    "dataset:build": "pnpm dataset:select && uv run --frozen --project packages/baselines/base python scripts/build-trace-plus-17.py",
+    "dataset:verify": "pnpm --filter @hero/data-preprocessing build && node packages/hero-data-preprocessing/dist/cli.js --verify experiments/data/trace-plus-17/manifest.json",
+    "model:setup": "uv run --project packages/hero-drift-constrained-opd/python --python 3.12 python -m hero_qwen.model_registry --root experiments/checkpoints/qwen3.5-4b download-base",
+    "model:smoke": "pnpm build && node scripts/dsh-local-model-smoke.mjs",
+    "model:status": "uv run --project packages/hero-drift-constrained-opd/python --python 3.12 python -m hero_qwen.model_registry --root experiments/checkpoints/qwen3.5-4b show",
+    "opd:test": "pnpm --filter @hero/drift-constrained-opd python:test",
+    "opd:validate": "pnpm --filter @hero/drift-constrained-opd python:validate",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dsh:config": "node scripts/dsh-test-profile.mjs config",
+    "dsh:smoke": "pnpm build && node scripts/dsh-smoke.mjs",
+    "dsh:web": "pnpm build && node scripts/dsh-host-web.mjs"
+  },
+  "devDependencies": {
+    "@deepseek-ai/dsh": "0.1.2-rc.1",
+    "@types/node": "26.0.0",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.0.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "typescript": "6.0.3",
+    "vite": "8.1.0",
+    "vitest": "4.1.9"
+  }
+}

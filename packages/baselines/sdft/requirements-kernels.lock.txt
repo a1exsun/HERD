@@ -1,0 +1,4 @@
+# Flash-linear-attention kernels for Qwen3.5 gated-delta layers; installed with --no-deps.
+flash-linear-attention==0.4.2 --hash=sha256:c08be006ce4dbe1be81f54938ee8e6fc7968cfba397c8d06c7669e97b8c44c0d
+fla-core==0.4.2 --hash=sha256:cba3db29380002da3cbfc0db94d6efac19aaf528900d19c05c2765e8f3cc485b
+einops==0.8.2 --hash=sha256:54058201ac7087911181bfec4af6091bb59380360f069276601256a76af08193

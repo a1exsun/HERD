@@ -1,0 +1,15 @@
+{
+  "repository": "https://github.com/ZinYY/TreeLoRA",
+  "commit": "1c7260c42b34e1961283797c742f08b9c3842501",
+  "files": {
+    "README.md": "42a127f8a3f15465a2dc4ff6ed646c7217b0dd4eb115c313bb86bb8995217e73",
+    "model/Regular/Tree_LoRA.py": "d87051699776f4c4dec9d387e675373f972b43999e76bc39edeee3d482283768",
+    "model/base_model.py": "4804be634fb05c528a122d6f4b58fa64131dcb9c39db1ed2f2a0638318e75e81",
+    "scripts/lora_based_methods/Tree_LoRA.sh": "f73d9c00ad938ca3a7c601feced57c82b0f1ac3a4f5c66237ba168948411ed05",
+    "training/main.py": "f90f35b90e33eef7f11b970d2240e81c518ae2d8033fd7662e2bf79638604d2f",
+    "utils/ds_utils.py": "d260ad7610216e4be89c8ddf4c5782d2044f618363772b3d37f697dd49806402",
+    "utils/kd_lora_tree.py": "de0336b97058df6c12cbe28d1ec4e033ebfdcaf9908258f84d64280e3e336cf5",
+    "utils/my_peft/tuners/lora.py": "39df438921609fd63ebf0c920653c82f125c0535c9917c80e83a24e7597e0968",
+    "utils/utils.py": "e8be4be72b152e7ef0e3e63b48816898934b4f23a36dbad276410ebd071eabc5"
+  }
+}

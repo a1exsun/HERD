@@ -1,0 +1,21 @@
+- id: llm-pi-ai
+  config:
+    providers:
+      hero-qwen-local:
+        displayName: HERO local Qwen
+        apiKeyEnv: HERO_QWEN_LOCAL_API_KEY
+        api: openai-completions
+        baseURL: http://127.0.0.1:8192/v1
+        compat:
+          supportsDeveloperRole: false
+          maxTokensField: max_tokens
+        models:
+          - id: Qwen/Qwen3.5-4B
+            name: Qwen3.5-4B · HERO active version
+            contextWindow: 132096
+            maxTokens: 1024
+            reasoningEfforts: false
+
+- insert:
+    - id: hero
+      name: '@hero/dsh-plugin'

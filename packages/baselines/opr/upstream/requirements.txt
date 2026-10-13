@@ -1,0 +1,9 @@
+ms-swift==3.12
+vllm==0.11.0
+evaluate
+liger-kernel
+python-Levenshtein
+fuzzywuzzy
+mpi4py
+sacremoses
+rouge_score

@@ -1,0 +1,1448 @@
+{
+  "schemaVersion": "hero-trace-plus-17-manifest-v1",
+  "datasetVersion": "selection-500",
+  "name": "TRACE+17",
+  "seed": 42,
+  "taskCount": 25,
+  "requestedSplits": {
+    "train": 500,
+    "validation": 100,
+    "test": 100
+  },
+  "sourceRevisions": {
+    "traceRepository": "462e39f616134f4f819efeb3baea8638c03c7db4",
+    "superNiRepository": "e0fd31052b21acea5bd95fb00253e1ee1f5d8259"
+  },
+  "sourceLayout": {
+    "traceBenchmark": "LLM-CL-Benchmark_500",
+    "traceRoot": "experiments/data/raw/trace/LLM-CL-Benchmark_500",
+    "superNiTaskRoot": "experiments/data/raw/superni/natural-instructions-v2.8/tasks"
+  },
+  "isolation": {
+    "validationTargets": "hidden-scorer-only",
+    "testRecords": "hidden-scorer-only",
+    "testUse": "evaluation-only"
+  },
+  "integrity": {
+    "normalizedPromptRule": "NFKC-whitespace",
+    "crossSplitOverlap": 0,
+    "status": "passed"
+  },
+  "totals": {
+    "requested": {
+      "train": 12500,
+      "validation": 2500,
+      "test": 2500
+    },
+    "realized": {
+      "train": 12206,
+      "validation": 2425,
+      "test": 2477
+    },
+    "deviationCount": 8
+  },
+  "tasks": [
+    {
+      "position": 1,
+      "id": "trace:C-STANCE",
+      "source": "trace",
+      "sourceTaskId": "C-STANCE",
+      "category": "Stance Classification",
+      "outputType": "closed",
+      "metric": "strict_exact_match",
+      "sourceRecords": 700,
+      "uniquePrompts": 700,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/01-trace-c-stance/train.jsonl",
+          "records": 500,
+          "sha256": "615dd5899eac93bfdffd5ba015ef086ea085fede62061c554777bb26d1f3c05f",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/01-trace-c-stance/validation.jsonl",
+          "records": 100,
+          "sha256": "6b5c6b68b43bbaa83a3b2e1efaa05b09f38799c8b6fe242b452dcaf76b57cd7f",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/01-trace-c-stance/validation.jsonl",
+          "records": 100,
+          "sha256": "b1be7d795738d5a545716242c244560d7fead64a336a655104def04ed71aaeb0",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/01-trace-c-stance/test.jsonl",
+          "records": 100,
+          "sha256": "747ebd8801319c4e1c5125b6850c85366389363e787ccd371bdd4de18872c2ff",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 2,
+      "id": "trace:FOMC",
+      "source": "trace",
+      "sourceTaskId": "FOMC",
+      "category": "Monetary Policy Classification",
+      "outputType": "closed",
+      "metric": "strict_exact_match",
+      "sourceRecords": 700,
+      "uniquePrompts": 679,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 4,
+        "crossSplitPrompt": 17
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 495,
+        "validation": 84,
+        "test": 100
+      },
+      "deviations": [
+        {
+          "split": "train",
+          "requested": 500,
+          "realized": 495,
+          "reason": "source-exhausted-after-deduplication"
+        },
+        {
+          "split": "validation",
+          "requested": 100,
+          "realized": 84,
+          "reason": "source-exhausted-after-deduplication"
+        }
+      ],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/02-trace-fomc/train.jsonl",
+          "records": 495,
+          "sha256": "b203d097b87992546554d30ce8379ab233e7053ac3a316b13da2e8bd297aaf75",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/02-trace-fomc/validation.jsonl",
+          "records": 84,
+          "sha256": "95e80e87b2d32d03b2a0116b559ea02536868d55556feaf0f6275653adaccb71",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/02-trace-fomc/validation.jsonl",
+          "records": 84,
+          "sha256": "07cb841820828f72f0c6bfe9bab2ffd915a2c140482e7fb07b93be9b85f8114b",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/02-trace-fomc/test.jsonl",
+          "records": 100,
+          "sha256": "03cdc4d56cfe7e16069a3097e6217679992fa57bc823d5a067f1e43dee5fd835",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 3,
+      "id": "trace:MeetingBank",
+      "source": "trace",
+      "sourceTaskId": "MeetingBank",
+      "category": "Meeting Summarization",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 700,
+      "uniquePrompts": 700,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/03-trace-meetingbank/train.jsonl",
+          "records": 500,
+          "sha256": "2d4e272b8359efe6eb3df3f88e18c7c83a6326ec220b48be7606e2ad888f293f",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/03-trace-meetingbank/validation.jsonl",
+          "records": 100,
+          "sha256": "d40a348cd7a0765235929347d1b86dc917e7cbfb3a4757634d48522f2d761e33",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/03-trace-meetingbank/validation.jsonl",
+          "records": 100,
+          "sha256": "0f4bee1be4b39f67c798371f54381fb99dd5a995740bd0dd5ef50340c7c765e5",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/03-trace-meetingbank/test.jsonl",
+          "records": 100,
+          "sha256": "434276313fac04aaa139925abb57c2ad3602e01f898eca588ad80fc8ac3b7bc7",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 4,
+      "id": "trace:Py150",
+      "source": "trace",
+      "sourceTaskId": "Py150",
+      "category": "Code Completion",
+      "outputType": "open",
+      "metric": "edit_similarity",
+      "sourceRecords": 700,
+      "uniquePrompts": 673,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 22,
+        "crossSplitPrompt": 5
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 477,
+        "validation": 100,
+        "test": 96
+      },
+      "deviations": [
+        {
+          "split": "train",
+          "requested": 500,
+          "realized": 477,
+          "reason": "source-exhausted-after-deduplication"
+        },
+        {
+          "split": "test",
+          "requested": 100,
+          "realized": 96,
+          "reason": "source-exhausted-after-deduplication"
+        }
+      ],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/04-trace-py150/train.jsonl",
+          "records": 477,
+          "sha256": "31df3e5db24c9af6da1c18a8e93ff29c1330076174463b6d040ca566d5e5f3cb",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/04-trace-py150/validation.jsonl",
+          "records": 100,
+          "sha256": "28173a2932515965c566983097b9888c291d64a71f6787755275781d72a802ea",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/04-trace-py150/validation.jsonl",
+          "records": 100,
+          "sha256": "038ed1838218b6a3dfdd3209e112e0118ff4d81888c2da4eaa4ec54512b97eb4",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/04-trace-py150/test.jsonl",
+          "records": 96,
+          "sha256": "6c13dff087f020528cefb01115dba79312fc6eb6d005888fc3087b7938247a3a",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 5,
+      "id": "trace:ScienceQA",
+      "source": "trace",
+      "sourceTaskId": "ScienceQA",
+      "category": "Science Question Answering",
+      "outputType": "closed",
+      "metric": "leading_choice_accuracy",
+      "sourceRecords": 700,
+      "uniquePrompts": 700,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/05-trace-scienceqa/train.jsonl",
+          "records": 500,
+          "sha256": "cd8f705774e991d02e201f1840121c637f3005a2ebc675a356c9557401a5bb7a",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/05-trace-scienceqa/validation.jsonl",
+          "records": 100,
+          "sha256": "7d3ee9b2b97b513c87e8b95ccc5ca642d24db6c69422d7f8380ed67d84129824",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/05-trace-scienceqa/validation.jsonl",
+          "records": 100,
+          "sha256": "c7a479d73031e22bc6e6cac2976bcbd1d331825fdc97def9ef6599e8e7d76ddf",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/05-trace-scienceqa/test.jsonl",
+          "records": 100,
+          "sha256": "a69795802efa56a9553914fcf726123efb12c2d0d6b3b6cb8192adaf576d9c74",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 6,
+      "id": "trace:NumGLUE-cm",
+      "source": "trace",
+      "sourceTaskId": "NumGLUE-cm",
+      "category": "Numerical Reasoning",
+      "outputType": "closed",
+      "metric": "strict_exact_match",
+      "sourceRecords": 622,
+      "uniquePrompts": 378,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 244,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 256,
+        "validation": 41,
+        "test": 81
+      },
+      "deviations": [
+        {
+          "split": "train",
+          "requested": 500,
+          "realized": 256,
+          "reason": "source-exhausted-after-deduplication"
+        },
+        {
+          "split": "validation",
+          "requested": 100,
+          "realized": 41,
+          "reason": "source-exhausted-after-deduplication"
+        },
+        {
+          "split": "test",
+          "requested": 100,
+          "realized": 81,
+          "reason": "source-exhausted-after-deduplication"
+        }
+      ],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/06-trace-numglue-cm/train.jsonl",
+          "records": 256,
+          "sha256": "b673c6eed884e2a1d9c177be55f94b97b59de7b57b71762ce7adb86748ca848d",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/06-trace-numglue-cm/validation.jsonl",
+          "records": 41,
+          "sha256": "a6342924ac49bc4383fca7acbd3edc71093e16c1cbfc923379fc0103fb01a666",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/06-trace-numglue-cm/validation.jsonl",
+          "records": 41,
+          "sha256": "ee15d2e12312e20bda52f417ef30b9c9048c26da53aa5b0291ee22f126375d42",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/06-trace-numglue-cm/test.jsonl",
+          "records": 81,
+          "sha256": "2d114fdc6bce3c728587480754db72633093e2fec158de0af307f4baf74ec64b",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 7,
+      "id": "trace:NumGLUE-ds",
+      "source": "trace",
+      "sourceTaskId": "NumGLUE-ds",
+      "category": "Numerical Reasoning",
+      "outputType": "closed",
+      "metric": "strict_exact_match",
+      "sourceRecords": 700,
+      "uniquePrompts": 678,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 10,
+        "crossSplitPrompt": 12
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 478,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [
+        {
+          "split": "train",
+          "requested": 500,
+          "realized": 478,
+          "reason": "source-exhausted-after-deduplication"
+        }
+      ],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/07-trace-numglue-ds/train.jsonl",
+          "records": 478,
+          "sha256": "3a970d1059bfea5b5f7d5b3faea7d8b6ec29d0996afe7b56e6dfe3012a921a42",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/07-trace-numglue-ds/validation.jsonl",
+          "records": 100,
+          "sha256": "9a2eb7900432ff0c63dbc9b36dc124377e6e2b6854ea6c99cd57b34dc6231fec",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/07-trace-numglue-ds/validation.jsonl",
+          "records": 100,
+          "sha256": "8306b7b633a9d1102522a671d8f8a4500487ad895be79774d9eaaf99c4cbdcb6",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/07-trace-numglue-ds/test.jsonl",
+          "records": 100,
+          "sha256": "51661c91d861353a66ee61ba79526ff152df067ce8b720ceed07dfef0f98c67c",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 8,
+      "id": "trace:20Minuten",
+      "source": "trace",
+      "sourceTaskId": "20Minuten",
+      "category": "Text Simplification",
+      "outputType": "open",
+      "metric": "sari",
+      "sourceRecords": 700,
+      "uniquePrompts": 700,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/08-trace-20minuten/train.jsonl",
+          "records": 500,
+          "sha256": "ff29feaa391c8b091afc8bf4174c54ded2f23903f57867bf6650337e63c25e1c",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/08-trace-20minuten/validation.jsonl",
+          "records": 100,
+          "sha256": "2a920ddad4a4ba86e3b2dba413428bf15e670dbf88d6afeb03410f9f3eda23fb",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/08-trace-20minuten/validation.jsonl",
+          "records": 100,
+          "sha256": "f7537b445d7f23af91b3a1e14b9112e33763e927e9b2305d074379e85ef64d60",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/08-trace-20minuten/test.jsonl",
+          "records": 100,
+          "sha256": "f91d819067c7d522dfaac82cb574fd5c2a89dda463d5ccaec8c44a6c239c376e",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 9,
+      "id": "superni:024",
+      "source": "superni",
+      "sourceTaskId": "024",
+      "category": "Question Answering",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 6500,
+      "uniquePrompts": 6500,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/09-superni-024/train.jsonl",
+          "records": 500,
+          "sha256": "159e7cc84433b0c0eb648302f173ce791000a150192f733e8559d20569f960e0",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/09-superni-024/validation.jsonl",
+          "records": 100,
+          "sha256": "c5b6da3d3054535dfb4ef8d89e11f16e32c9d38e33a1e344be213af3b08bc86b",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/09-superni-024/validation.jsonl",
+          "records": 100,
+          "sha256": "1b184c5c051fecf194f879ec515ec3d8b88ab131911e173153596ff5412d3a35",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/09-superni-024/test.jsonl",
+          "records": 100,
+          "sha256": "f98da09e01c44fa7b474bd7204870f26643bd66bc246a29f3277ca05ae5b7392",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 10,
+      "id": "superni:074",
+      "source": "superni",
+      "sourceTaskId": "074",
+      "category": "Question Generation",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 6500,
+      "uniquePrompts": 6500,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/10-superni-074/train.jsonl",
+          "records": 500,
+          "sha256": "919da8c4464df80ec8a9f9465bbf19170875c2b94fc9d32aa9f34c6ae40aa09f",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/10-superni-074/validation.jsonl",
+          "records": 100,
+          "sha256": "b6dfdecc4b586ce50408152244e5e7c47e136a26e920365180df74712f9c8dec",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/10-superni-074/validation.jsonl",
+          "records": 100,
+          "sha256": "3fe19622a9fcd9808fff4ce1fc7ad8cb67a708336f27b6a53ba923ea9c6813df",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/10-superni-074/test.jsonl",
+          "records": 100,
+          "sha256": "cd737a9aa6af54bfeecd2c8b075e25873bc90923a0f43c675dd1315cec5dd829",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 11,
+      "id": "superni:195",
+      "source": "superni",
+      "sourceTaskId": "195",
+      "category": "Sentiment Analysis",
+      "outputType": "closed",
+      "metric": "exact_match",
+      "sourceRecords": 6500,
+      "uniquePrompts": 6499,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 1,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/11-superni-195/train.jsonl",
+          "records": 500,
+          "sha256": "3585f9d4f1a86870fe2d812829b5bc46331a7de2f01c848277429b1980df5044",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/11-superni-195/validation.jsonl",
+          "records": 100,
+          "sha256": "5f818f2d6aa3c9834625df196a40c1478a810bf2a717c146ab451438d587409c",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/11-superni-195/validation.jsonl",
+          "records": 100,
+          "sha256": "9671c7cde61e78a9283855b959381c2efc693078be412d479bdd9f232b3e93d5",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/11-superni-195/test.jsonl",
+          "records": 100,
+          "sha256": "4a2260c1087bad549c5ab269c712cf154b1a962268a11a4fbd5c607b1df34530",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 12,
+      "id": "superni:511",
+      "source": "superni",
+      "sourceTaskId": "511",
+      "category": "Summarization",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 6500,
+      "uniquePrompts": 6455,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 45,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/12-superni-511/train.jsonl",
+          "records": 500,
+          "sha256": "630740dd3d3502a5737fda09085fe7900245f16cb1d7d5fa41f32b0f26487609",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/12-superni-511/validation.jsonl",
+          "records": 100,
+          "sha256": "3ea66c7896b66317fbc5d3b53ff40784bfbc87f7b8f64e60c05f0debc35bf668",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/12-superni-511/validation.jsonl",
+          "records": 100,
+          "sha256": "ebfda82c87f7d7bb63e65e2190c81ab3d43784056b7fd28d184395386547d582",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/12-superni-511/test.jsonl",
+          "records": 100,
+          "sha256": "bfda37ec45ebbd3c3a0624260ab27e0bd901106d901865fbcb3dcc482e4fbd94",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 13,
+      "id": "superni:1219",
+      "source": "superni",
+      "sourceTaskId": "1219",
+      "category": "Translation",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 6405,
+      "uniquePrompts": 6405,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/13-superni-1219/train.jsonl",
+          "records": 500,
+          "sha256": "3c23cbdc2375652e88bad80536849662c900341645a014cd798b0514a8c4e024",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/13-superni-1219/validation.jsonl",
+          "records": 100,
+          "sha256": "70f3e86978a677703efb38aaedf070dc2a80c2dbeaf4c20c46a6a1cda70a450d",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/13-superni-1219/validation.jsonl",
+          "records": 100,
+          "sha256": "b8d2dfa1e8a99067bda9c41efd1ceaeb2052b0641f18b390a6d9b81552d10b1d",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/13-superni-1219/test.jsonl",
+          "records": 100,
+          "sha256": "ebfc6c94e3fe900b48ad2a06ab8c850f2eea6869c64f2aa6ca8c7681f9f261af",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 14,
+      "id": "superni:574",
+      "source": "superni",
+      "sourceTaskId": "574",
+      "category": "Dialogue Generation",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 6500,
+      "uniquePrompts": 6500,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/14-superni-574/train.jsonl",
+          "records": 500,
+          "sha256": "045dcd72160699471b5d666152ef92a4f0f014299d39fc30be3835ca99f40d1a",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/14-superni-574/validation.jsonl",
+          "records": 100,
+          "sha256": "d71cab74797c89843f2b7abc63dd0a46ffbe3c76b8858627ad19db825fea8424",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/14-superni-574/validation.jsonl",
+          "records": 100,
+          "sha256": "43f9e8bb6622f4ebad58b274d89eed7ab5598e73905d69df515fd1c52061393c",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/14-superni-574/test.jsonl",
+          "records": 100,
+          "sha256": "08e6cd477cabcf5d393dd9640ab415f750c914497a3ab85bf7ee3d617c2711bf",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 15,
+      "id": "superni:192",
+      "source": "superni",
+      "sourceTaskId": "192",
+      "category": "Explanation",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 5000,
+      "uniquePrompts": 5000,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/15-superni-192/train.jsonl",
+          "records": 500,
+          "sha256": "6fc1b87d213dc4bacbec56e0a06de4f23d5c873dc470342bfca61d4ec7e80f76",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/15-superni-192/validation.jsonl",
+          "records": 100,
+          "sha256": "06f7e6a5f74b886d1c3621a6ee7334c93fe213d3b1a0ab8ca5885778c4d42fc0",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/15-superni-192/validation.jsonl",
+          "records": 100,
+          "sha256": "81b9eb89060fb5a236ae2f7bd0f0f109c90fefe9d17f53aca59d5b289eee39bc",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/15-superni-192/test.jsonl",
+          "records": 100,
+          "sha256": "93129ca13849cbc44101da8a7df0266bf5f0213497c3ccfd53d0500d2b68d641",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 16,
+      "id": "superni:177",
+      "source": "superni",
+      "sourceTaskId": "177",
+      "category": "Paraphrasing",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 6500,
+      "uniquePrompts": 6500,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/16-superni-177/train.jsonl",
+          "records": 500,
+          "sha256": "31d687f5cb764d45a7dd6ad262a1c5cec6fa0161780d0739492ac5ec790a53d5",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/16-superni-177/validation.jsonl",
+          "records": 100,
+          "sha256": "44580567d8fc26b3bc171d7fc0272f5aadd6d451b022173999f76aa2d75a57a1",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/16-superni-177/validation.jsonl",
+          "records": 100,
+          "sha256": "accce16ae5a83e9029cfa9979b90ed1868554f4285a15bbd00516b57bb9011b4",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/16-superni-177/test.jsonl",
+          "records": 100,
+          "sha256": "0d994f9b6b477fde2f88ad6579cc9fbabacb0ab669bee00170a527983bee83c9",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 17,
+      "id": "superni:064",
+      "source": "superni",
+      "sourceTaskId": "064",
+      "category": "Program Execution",
+      "outputType": "closed",
+      "metric": "exact_match",
+      "sourceRecords": 6500,
+      "uniquePrompts": 6500,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/17-superni-064/train.jsonl",
+          "records": 500,
+          "sha256": "2dd3f1474d72a01b6b08d71116cc74840d039e26152392c32a7534d2932f9169",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/17-superni-064/validation.jsonl",
+          "records": 100,
+          "sha256": "df7720d760658694259f6e8980b2f8abd2de25c54872a531af8962614e012e86",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/17-superni-064/validation.jsonl",
+          "records": 100,
+          "sha256": "40ffcb01881b33e2c7a5889869ba6f475f53c9d57db2464f85b6cdee4a73d075",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/17-superni-064/test.jsonl",
+          "records": 100,
+          "sha256": "2a662bb650a3061513cced6929bb611a3142623f78a1a9e94bb5f747857c5df3",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 18,
+      "id": "superni:346",
+      "source": "superni",
+      "sourceTaskId": "346",
+      "category": "POS Tagging",
+      "outputType": "closed",
+      "metric": "exact_match",
+      "sourceRecords": 6497,
+      "uniquePrompts": 6497,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/18-superni-346/train.jsonl",
+          "records": 500,
+          "sha256": "e942775564f8307517813f027580ada0dea6b4f35754fdd7b1c1f0fe12a3b245",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/18-superni-346/validation.jsonl",
+          "records": 100,
+          "sha256": "f7d209a33c96c2ad2826d0a46995fea54e8bb7dd8d7b6006e9059c8f4454f9f2",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/18-superni-346/validation.jsonl",
+          "records": 100,
+          "sha256": "23952aaad455c20c5f9c713399e28f2ce921e1a32157917b628b5090fd161dd2",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/18-superni-346/test.jsonl",
+          "records": 100,
+          "sha256": "47a7865dd12ce64c691da41f70cea8783d1e64ba3cf58aa09f45fba062f8629f",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 19,
+      "id": "superni:108",
+      "source": "superni",
+      "sourceTaskId": "108",
+      "category": "Toxic Language Detection",
+      "outputType": "closed",
+      "metric": "exact_match",
+      "sourceRecords": 3996,
+      "uniquePrompts": 3995,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 1,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/19-superni-108/train.jsonl",
+          "records": 500,
+          "sha256": "be41bfa8b05899edc6f9f61d6ea356b4aa4c20d6699a1f35573285f4f359f6b0",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/19-superni-108/validation.jsonl",
+          "records": 100,
+          "sha256": "d787cd09a30e77f21580979b4272ef627a590f6ed37596893d559410da2e7812",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/19-superni-108/validation.jsonl",
+          "records": 100,
+          "sha256": "3571884dfadcea443022da867b8da7f5867829b9b7d38039df6fce3f07ca9036",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/19-superni-108/test.jsonl",
+          "records": 100,
+          "sha256": "58f5a52a94a3fa570fc980b41a7829a424be91d4c42a9d36f03d34713897eb8a",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 20,
+      "id": "superni:111",
+      "source": "superni",
+      "sourceTaskId": "111",
+      "category": "Text Simplification",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 2000,
+      "uniquePrompts": 2000,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/20-superni-111/train.jsonl",
+          "records": 500,
+          "sha256": "392af844521122e52e0a108b65de559398ccc82c4add35893aceb05ee151c9bd",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/20-superni-111/validation.jsonl",
+          "records": 100,
+          "sha256": "b29ce0958858d843a3a9117d1e2e8db9ceea649f39dbb9d579f7a5e23bdaf595",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/20-superni-111/validation.jsonl",
+          "records": 100,
+          "sha256": "5177250049b546059ac475f80c24446d254a7a95fc95d21acd228abe112d031b",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/20-superni-111/test.jsonl",
+          "records": 100,
+          "sha256": "5ae11bd768e6963ad1a55ff2437d052484aec3f813af08d8780ad20953f192f0",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 21,
+      "id": "superni:1415",
+      "source": "superni",
+      "sourceTaskId": "1415",
+      "category": "Grammar Error Correction",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 6485,
+      "uniquePrompts": 6485,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/21-superni-1415/train.jsonl",
+          "records": 500,
+          "sha256": "9d91c415a8637d783affe763aa49926ac80deaec1ba157006eaa7b20730638f3",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/21-superni-1415/validation.jsonl",
+          "records": 100,
+          "sha256": "a7641610f309faed876c3edab5381953ff3d6ea86f44aab3621552176090838d",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/21-superni-1415/validation.jsonl",
+          "records": 100,
+          "sha256": "178fdbd4dadc073d85e4b33a55ff73849e51d9204e6cbc7dccba4f10974d5e56",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/21-superni-1415/test.jsonl",
+          "records": 100,
+          "sha256": "7188ecab3bacbf1d8817c1fbd5b834439aed7254f19461e239d1d72d7f510b0f",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 22,
+      "id": "superni:1447",
+      "source": "superni",
+      "sourceTaskId": "1447",
+      "category": "Named Entity Recognition",
+      "outputType": "closed",
+      "metric": "exact_match",
+      "sourceRecords": 2718,
+      "uniquePrompts": 2718,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/22-superni-1447/train.jsonl",
+          "records": 500,
+          "sha256": "25f03a357977523b5ff567d17555e70e2559260a13b6275975d93eeabbdfcd5b",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/22-superni-1447/validation.jsonl",
+          "records": 100,
+          "sha256": "9288032f06d66afb93dc1ae012a8a1ed05caef3eda2fc6afcda0d405fd5e3bf1",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/22-superni-1447/validation.jsonl",
+          "records": 100,
+          "sha256": "7c5998c6141e2a1650c5d1e4ef31cb9c8f9db5e8c72d58d4d9eddc7fd2d59194",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/22-superni-1447/test.jsonl",
+          "records": 100,
+          "sha256": "6295f81078dbe6f83eabd21d68d25cd1eb6d41fd2531e36d8527d95d9751d2b5",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 23,
+      "id": "superni:828",
+      "source": "superni",
+      "sourceTaskId": "828",
+      "category": "Cause Effect Classification",
+      "outputType": "closed",
+      "metric": "exact_match",
+      "sourceRecords": 996,
+      "uniquePrompts": 996,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/23-superni-828/train.jsonl",
+          "records": 500,
+          "sha256": "9aa07de41b356b35914c436955367325923d9475bd922942ec1d5954ab4160df",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/23-superni-828/validation.jsonl",
+          "records": 100,
+          "sha256": "843e6442c7d87c6a44736dcebf100115e28f64e6ff6dec028f8254308a26d636",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/23-superni-828/validation.jsonl",
+          "records": 100,
+          "sha256": "973a416f2234990f88e556653f4256cf46bcb94e55fb9e36e457246b155352c7",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/23-superni-828/test.jsonl",
+          "records": 100,
+          "sha256": "b721508d9fb65714af08cc056a8ccc488bc6b4b636041fd441c77ada52d5fd1a",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 24,
+      "id": "superni:1728",
+      "source": "superni",
+      "sourceTaskId": "1728",
+      "category": "Data to Text",
+      "outputType": "open",
+      "metric": "rouge_l",
+      "sourceRecords": 6495,
+      "uniquePrompts": 6495,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/24-superni-1728/train.jsonl",
+          "records": 500,
+          "sha256": "9e59a8810d4a476e1b5cf7b126e96846c2fccc824bb3f6915dd626e750d84469",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/24-superni-1728/validation.jsonl",
+          "records": 100,
+          "sha256": "9613d2333edfdd9091208e4b38488960990d540c7848d5bc7268f991a8084629",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/24-superni-1728/validation.jsonl",
+          "records": 100,
+          "sha256": "2a651aaa731653736977630306a6b22d4455e9e7d52f36559804b7458f9c262b",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/24-superni-1728/test.jsonl",
+          "records": 100,
+          "sha256": "51dd971efa177841be095e2f8637556d7a974df8939928df6cc31e59af199ce2",
+          "visibility": "hidden-scorer"
+        }
+      }
+    },
+    {
+      "position": 25,
+      "id": "superni:217",
+      "source": "superni",
+      "sourceTaskId": "217",
+      "category": "Sentence Ordering",
+      "outputType": "closed",
+      "metric": "exact_match",
+      "sourceRecords": 6500,
+      "uniquePrompts": 6500,
+      "excludedRecords": {
+        "emptyPrompt": 0,
+        "emptyReference": 0,
+        "duplicatePrompt": 0,
+        "crossSplitPrompt": 0
+      },
+      "requested": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "realized": {
+        "train": 500,
+        "validation": 100,
+        "test": 100
+      },
+      "deviations": [],
+      "files": {
+        "train": {
+          "path": "agent-visible/tasks/25-superni-217/train.jsonl",
+          "records": 500,
+          "sha256": "4201377e0a0d9309a88428b3b1cbcbd9395a5b0d0cb64633841ad3bce36c68b1",
+          "visibility": "agent-visible"
+        },
+        "validationInputs": {
+          "path": "agent-visible/tasks/25-superni-217/validation.jsonl",
+          "records": 100,
+          "sha256": "f695716c2172c7d6ded82222c4f0a2fb8c49c7eeed378d028d8b05bedba985ed",
+          "visibility": "agent-visible"
+        },
+        "validationGold": {
+          "path": "hidden-scorer/tasks/25-superni-217/validation.jsonl",
+          "records": 100,
+          "sha256": "4261a5075aac715989351e26a1c501e794013b16c3bf9a2d46168fed688750b0",
+          "visibility": "hidden-scorer"
+        },
+        "testGold": {
+          "path": "hidden-scorer/tasks/25-superni-217/test.jsonl",
+          "records": 100,
+          "sha256": "fb70dabb62bb7df35d78b54c1d50f1e1016c6dd9e3b54b4f51d468df9711779e",
+          "visibility": "hidden-scorer"
+        }
+      }
+    }
+  ]
+}

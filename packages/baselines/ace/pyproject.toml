@@ -1,0 +1,27 @@
+[project]
+name = "hero-ace-baseline"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "absl-py==2.5.0",
+  "fuzzywuzzy==0.18.0",
+  "httpx>=0.27,<1",
+  "immutabledict==4.2.1",
+  "langdetect==1.0.9",
+  "nltk==3.10.3",
+  "numpy>=2,<3",
+  "openai==2.21.0",
+  "python-dotenv==1.2.1",
+  "python-Levenshtein==0.27.1",
+  "rouge==1.0.1",
+  "rouge-score==0.1.2",
+  "sacrebleu==2.5.1",
+  "tiktoken==0.12.0",
+  "tokenizers==0.22.2",
+]
+
+[project.optional-dependencies]
+local-model = ["torch==2.14.0", "transformers==5.2.0"]
+
+[dependency-groups]
+dev = ["pytest>=8.4,<10"]

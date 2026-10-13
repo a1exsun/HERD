@@ -1,0 +1,265 @@
+{
+  "version": "hero-general-test-v1",
+  "seed": 42,
+  "plan": "five equal-weight categories",
+  "categories": [
+    {
+      "category": "general-knowledge",
+      "source": "mmlu",
+      "metric": "leading_choice_accuracy",
+      "usableRecords": 13937,
+      "excludedByStreamOverlap": 0,
+      "excludedAsDuplicate": 105,
+      "nonTestCount": 13,
+      "testCount": 200,
+      "developmentCount": 40,
+      "probeCount": 40
+    },
+    {
+      "category": "mathematical-reasoning",
+      "source": "gsm8k",
+      "metric": "final_number_match",
+      "usableRecords": 1319,
+      "excludedByStreamOverlap": 0,
+      "excludedAsDuplicate": 0,
+      "nonTestCount": 13,
+      "testCount": 200,
+      "developmentCount": 40,
+      "probeCount": 40
+    },
+    {
+      "category": "commonsense-reasoning",
+      "source": "hellaswag",
+      "metric": "leading_choice_accuracy",
+      "usableRecords": 10042,
+      "excludedByStreamOverlap": 0,
+      "excludedAsDuplicate": 0,
+      "nonTestCount": 13,
+      "testCount": 200,
+      "developmentCount": 40,
+      "probeCount": 40
+    },
+    {
+      "category": "instruction-following",
+      "source": "ifeval",
+      "metric": "ifeval_strict",
+      "usableRecords": 541,
+      "excludedByStreamOverlap": 0,
+      "excludedAsDuplicate": 0,
+      "nonTestCount": 13,
+      "testCount": 200,
+      "developmentCount": 40,
+      "probeCount": 40
+    },
+    {
+      "category": "multilingual-understanding",
+      "source": "xcopa",
+      "metric": "leading_choice_accuracy",
+      "usableRecords": 5500,
+      "excludedByStreamOverlap": 0,
+      "excludedAsDuplicate": 0,
+      "nonTestCount": 12,
+      "testCount": 200,
+      "developmentCount": 40,
+      "probeCount": 40,
+      "testLanguageCounts": {
+        "et": 19,
+        "ht": 18,
+        "id": 17,
+        "it": 19,
+        "qu": 18,
+        "sw": 18,
+        "ta": 18,
+        "th": 18,
+        "tr": 19,
+        "vi": 18,
+        "zh": 18
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "non-test/general.jsonl",
+      "records": 64,
+      "sha256": "8cf9284a5341fda491debeea32f6c8c44b2282247b616adff3b78ec5f39959ad"
+    },
+    {
+      "path": "hidden-scorer/general-test.jsonl",
+      "records": 1000,
+      "sha256": "a060194289bb6b60a9c046838f01a8f8988b6f34126a3157662efaa8e887c461"
+    },
+    {
+      "path": "development/general-dev.jsonl",
+      "records": 200,
+      "sha256": "ba3338cca5d6935a7d99211d7d86f4cc191985ec033d1d29bd751fdb4dc5a95d"
+    },
+    {
+      "path": "hidden-scorer/probe-ids.json",
+      "records": 200,
+      "sha256": "6928c6f156838d929b71d72808173c3c421fdce9bb76ea35dd1083ee05204fd9"
+    }
+  ],
+  "rawSources": {
+    "cais/mmlu": {
+      "revision": "c30699e8356da336a370243923dbaf21066bb9fe",
+      "files": [
+        {
+          "file": "all/test-00000-of-00001.parquet",
+          "bytes": 3504718,
+          "sha256": "74a41822ce7d3def56e1682f958469c04642a5336a5ce912fa375fdb90fb25d7"
+        }
+      ]
+    },
+    "openai/gsm8k": {
+      "revision": "740312add88f781978c0658806c59bc2815b9866",
+      "files": [
+        {
+          "file": "main/test-00000-of-00001.parquet",
+          "bytes": 419088,
+          "sha256": "ee7b8da9e381df27b9e3f7758a159ab2bdaa4dbaa910546cbbc47e0cb44e4f59"
+        }
+      ]
+    },
+    "Rowan/hellaswag": {
+      "revision": "218ec52e09a7e7462a5400043bb9a69a41d06b76",
+      "files": [
+        {
+          "file": "data/validation-00000-of-00001.parquet",
+          "bytes": 6315951,
+          "sha256": "899813071e1e95efafec90f856e1987d2150fa4d020fc005df6962c259f660cd"
+        }
+      ]
+    },
+    "google/IFEval": {
+      "revision": "966cd89545d6b6acfd7638bc708b98261ca58e84",
+      "files": [
+        {
+          "file": "ifeval_input_data.jsonl",
+          "bytes": 207111,
+          "sha256": "6a85310ca8ce15eff755aa08a3a4ff931c7e273e7515ebb3c492ea85fd8288f2"
+        }
+      ]
+    },
+    "cambridgeltl/xcopa": {
+      "revision": "042f78955ba48e6404616762fa6e05e839c3907a",
+      "files": [
+        {
+          "file": "et/test-00000-of-00001.parquet",
+          "bytes": 41765,
+          "sha256": "d6c634f2069d50d83d165c921100ea911611559e1ccce341984d83348634947e"
+        },
+        {
+          "file": "ht/test-00000-of-00001.parquet",
+          "bytes": 38818,
+          "sha256": "c656f3d259ef51ec4133d3bfac010388d81cab3403f3bfed27a65c79a0636a57"
+        },
+        {
+          "file": "id/test-00000-of-00001.parquet",
+          "bytes": 42359,
+          "sha256": "c4101fb78e943ef6f05d1518a38fa4a46d7a99de180852c896180e89e0088e74"
+        },
+        {
+          "file": "it/test-00000-of-00001.parquet",
+          "bytes": 46118,
+          "sha256": "bcfff39b774ce0b32265b963975fc8b6dee4717f8dd50194516bd37294094f5f"
+        },
+        {
+          "file": "qu/test-00000-of-00001.parquet",
+          "bytes": 43893,
+          "sha256": "9d9c0fad6ad99ec0032d38c8c3dd312cf1c078ca9c893e40702e31388569bfc7"
+        },
+        {
+          "file": "sw/test-00000-of-00001.parquet",
+          "bytes": 41394,
+          "sha256": "2a116f99cd89acad88cc0f1ff5f327759d1a4bad4f4edd4ac126b94c68018e3c"
+        },
+        {
+          "file": "ta/test-00000-of-00001.parquet",
+          "bytes": 71205,
+          "sha256": "cbb2ad0490a104a2613f01d4bc8016fd1647fd0ccd526b1c57b8676e4f3d998a"
+        },
+        {
+          "file": "th/test-00000-of-00001.parquet",
+          "bytes": 50989,
+          "sha256": "34863404e64ac696e0fdcfa8f3d622bf4c8f9f31dc617deb871917a68a0692a9"
+        },
+        {
+          "file": "tr/test-00000-of-00001.parquet",
+          "bytes": 41290,
+          "sha256": "ecf463029239fff38685200610b27dcefad0c9e1c177647928a2fa91967a473a"
+        },
+        {
+          "file": "translation-et/test-00000-of-00001.parquet",
+          "bytes": 39976,
+          "sha256": "8d8e156b6cfa5ede3e8f6782ee01a1b337dc871852a6a5eb600fe0f8097f6423"
+        },
+        {
+          "file": "translation-ht/test-00000-of-00001.parquet",
+          "bytes": 40541,
+          "sha256": "0dbbc034b4e4dd1cbddc679f9ae57b38dcec2be8cd098eabdabad2fff27dae03"
+        },
+        {
+          "file": "translation-id/test-00000-of-00001.parquet",
+          "bytes": 41153,
+          "sha256": "0d652c94ac26836dc8e805df82c8dbfe04acd766dc9288573dbce66305dc4e81"
+        },
+        {
+          "file": "translation-it/test-00000-of-00001.parquet",
+          "bytes": 41050,
+          "sha256": "660ce6a1637c5840bc28b44af22f801df09b3ed5d170813abf4a4abae49931d1"
+        },
+        {
+          "file": "translation-sw/test-00000-of-00001.parquet",
+          "bytes": 40645,
+          "sha256": "52d04505c81086a0bd3ec068a8d6fc8366e26f3845c4420d14a8e07b2da1c105"
+        },
+        {
+          "file": "translation-ta/test-00000-of-00001.parquet",
+          "bytes": 41874,
+          "sha256": "a811397fa4c162add5568d1fc937481f34079340ac661d42a4592c744c013fe6"
+        },
+        {
+          "file": "translation-th/test-00000-of-00001.parquet",
+          "bytes": 40352,
+          "sha256": "a5280f280233ae6d23f24f8ce6a0a51c7c6a193c93c45e2999a3c2b80d734bad"
+        },
+        {
+          "file": "translation-tr/test-00000-of-00001.parquet",
+          "bytes": 40202,
+          "sha256": "264f37729da2795803c043e068b3a0b5fb710749bd6752d3331e33964c8b431b"
+        },
+        {
+          "file": "translation-vi/test-00000-of-00001.parquet",
+          "bytes": 40142,
+          "sha256": "9986055fb9ecb4ae244ca1a1f43525100dd5159d23a010abf45b5411c3b59970"
+        },
+        {
+          "file": "translation-zh/test-00000-of-00001.parquet",
+          "bytes": 40681,
+          "sha256": "d30b7f33e4425f7b7087117868ee878793c2f0b80280c0e553c00daaf2cdd357"
+        },
+        {
+          "file": "vi/test-00000-of-00001.parquet",
+          "bytes": 45592,
+          "sha256": "d779ae87472bcc0eea51dc0e60b1c51b5e19dbe3004a82d68631e221dcf18c92"
+        },
+        {
+          "file": "zh/test-00000-of-00001.parquet",
+          "bytes": 40705,
+          "sha256": "011d99080f4ed69dd995df0372866447c233689158b7cca5a541a30a99839fa6"
+        }
+      ]
+    }
+  },
+  "selection": "SHA256(seed:id) order; disjoint slices per category in the order non-test, G-test, development; probe is the first 40 G-test records per category",
+  "nonTestStratification": "13/13/13/13/12 (multilingual is the short category)",
+  "crossSplitPromptOverlap": 0,
+  "streamPromptOrSuperNiInputOverlap": 0,
+  "totals": {
+    "nonTest": 64,
+    "test": 1000,
+    "probe": 200,
+    "development": 200
+  },
+  "boundary": "No G-test or probe record may enter proposals, residual ranking, KL constraints, recovery or checkpoint selection."
+}

@@ -1,0 +1,5 @@
+torch @ https://download-r2.pytorch.org/whl/cu124/torch-2.6.0%2Bcu124-cp310-cp310-linux_x86_64.whl#sha256=7f2ba7f7c0459320a521696f6b5bccc187f59890b23c9dfb6c49b0b87c6bfc97
+transformers==5.2.0
+peft==0.20.0
+accelerate==1.14.0
+safetensors==0.8.0

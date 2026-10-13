@@ -1,0 +1,40 @@
+[project]
+name = "hero-baselines"
+version = "0.1.0"
+description = "Matched comparison baselines for HERO"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+  "hero-evaluation",
+]
+
+[project.optional-dependencies]
+train = [
+  "peft>=0.18.0,<1",
+  "torch==2.14.0",
+  "transformers==5.2.0",
+]
+ophsd = [
+  "peft>=0.18.0,<1",
+  "torch==2.14.0",
+  "transformers==5.2.0",
+]
+
+[project.scripts]
+hero-baselines = "hero_baselines.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.4.0,<10"]
+
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hero_baselines"]
+
+[tool.uv.sources]
+hero-evaluation = { path = "../../evaluator/python" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

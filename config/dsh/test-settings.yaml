@@ -1,0 +1,3 @@
+# The HERO plugin declares its local Qwen provider (hero-qwen-local) in packages/hero-dsh-plugin/hero.patch.yml;
+# the test profile adds no other model provider.
+{}

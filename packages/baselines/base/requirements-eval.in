@@ -1,0 +1,14 @@
+# Base control on a CUDA node (bootstrap.sh): vLLM greedy decoding plus the package-local scorer's libraries,
+# pinned as in pyproject.toml. Python 3.10, linux x86_64; regenerate with:
+#   uv pip compile requirements-eval.in --python-platform x86_64-manylinux_2_28 --python-version 3.10 \
+#     --generate-hashes -o requirements-eval.lock.txt
+vllm==0.31.0
+absl-py==2.5.0
+fuzzywuzzy==0.18.0
+immutabledict==4.2.1
+langdetect==1.0.9
+nltk==3.10.3
+python-Levenshtein==0.27.1
+rouge==1.0.1
+rouge-score==0.1.2
+sacrebleu==2.5.1

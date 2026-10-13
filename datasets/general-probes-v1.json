@@ -1,0 +1,78 @@
+{
+  "version": "hero-general-probes-v1",
+  "seed": 42,
+  "tokenBudget": 8192,
+  "realizedTokens": 7426,
+  "sources": [
+    {
+      "taskId": "037",
+      "category": "factual",
+      "file": "task037_qasc_generate_related_fact.json",
+      "sha256": "71b28cef2e846d78b8113703b0705a97389b5b1ffd13d02be07754e4f84bdf8f",
+      "sourceInstances": 6500,
+      "excluded": 0,
+      "generalCount": 4,
+      "testCount": 40,
+      "generalTokens": 1360
+    },
+    {
+      "taskId": "061",
+      "category": "reading",
+      "file": "task061_ropes_answer_generation.json",
+      "sha256": "a65bc612bd492cb59872d92d498a92da0ccdab21816d0aa7d2147f649fe20c86",
+      "sourceInstances": 6500,
+      "excluded": 0,
+      "generalCount": 3,
+      "testCount": 40,
+      "generalTokens": 1534
+    },
+    {
+      "taskId": "116",
+      "category": "commonsense",
+      "file": "task116_com2sense_commonsense_reasoning.json",
+      "sha256": "07b614d365fbd889e9acbb5c41f1571a05641a349683e40901256398fca25f75",
+      "sourceInstances": 1948,
+      "excluded": 0,
+      "generalCount": 8,
+      "testCount": 40,
+      "generalTokens": 1521
+    },
+    {
+      "taskId": "118",
+      "category": "mathematics",
+      "file": "task118_semeval_2019_task10_open_vocabulary_mathematical_answer_generation.json",
+      "sha256": "7372a7181e8edb2e9fecdc81008c772abecf31772240546ed173901b4fb1ef2f",
+      "sourceInstances": 243,
+      "excluded": 0,
+      "generalCount": 4,
+      "testCount": 40,
+      "generalTokens": 1543
+    },
+    {
+      "taskId": "117",
+      "category": "multilingual",
+      "file": "task117_spl_translation_en_de.json",
+      "sha256": "a8efa05476389b08186cf02266371760721020acd525fa1b7af4ba15471d9495",
+      "sourceInstances": 358,
+      "excluded": 0,
+      "generalCount": 4,
+      "testCount": 40,
+      "generalTokens": 1468
+    }
+  ],
+  "files": [
+    {
+      "path": "non-test/general.jsonl",
+      "records": 23,
+      "sha256": "e9900ad9be23df23fc5c7a8900c920e7f2108c5dc24cd8bbb508258a2d4e2e2d"
+    },
+    {
+      "path": "hidden-scorer/general-test.jsonl",
+      "records": 200,
+      "sha256": "37b097b7ca034814ce2471f8e32fd3008f46d75ab46b3b8bfc60696341e879e6"
+    }
+  ],
+  "selection": "SHA256(seed:id) order; up to 8 complete non-test records per category under equal token budgets; first 40 remaining records per category held out",
+  "crossSplitPromptOverlap": 0,
+  "streamPromptOrSuperNiInputOverlap": 0
+}

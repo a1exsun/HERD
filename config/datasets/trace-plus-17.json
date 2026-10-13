@@ -1,0 +1,15 @@
+{
+  "datasetVersion": "selection-500",
+  "outputRoot": "experiments/data/trace-plus-17-500",
+  "traceBenchmark": "LLM-CL-Benchmark_500",
+  "seed": 42,
+  "requestedSplits": {
+    "train": 500,
+    "validation": 100,
+    "test": 100
+  },
+  "sourceRevisions": {
+    "traceRepository": "462e39f616134f4f819efeb3baea8638c03c7db4",
+    "superNiRepository": "e0fd31052b21acea5bd95fb00253e1ee1f5d8259"
+  }
+}

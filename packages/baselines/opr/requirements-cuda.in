@@ -1,0 +1,26 @@
+# Training and rollout environment (bootstrap.sh train|rollout): the method's runtime on Qwen3.5-4B.
+# `upstream/requirements.txt` pins ms-swift==3.12 and vllm==0.11.0, which predate Qwen3.5; these are the first
+# versions that load it (ms-swift registers qwen3_5 from 4.x; vLLM 0.31.0 is the evaluation engine of every
+# baseline). ms-swift needs transformers<5.17 and vLLM >=5.10.4, so one environment serves both.
+# mpi4py is dropped with DeepSpeed (one GPU). Python 3.10, linux x86_64; regenerate with:
+#   uv pip compile requirements-cuda.in --python-platform x86_64-manylinux_2_28 --python-version 3.10 \
+#     --generate-hashes -o requirements-cuda.lock.txt
+ms-swift==4.5.3
+vllm==0.31.0
+peft==0.20.0
+evaluate==0.4.6
+# ms-swift's Qwen3.5 loader requires it (model/models/qwen.py); Qwen2.5 did not.
+qwen-vl-utils==0.0.14
+liger-kernel
+python-Levenshtein
+fuzzywuzzy
+sacremoses
+rouge_score
+# Flash-linear-attention kernels for Qwen3.5's gated-delta layers in training (transformers falls back to a
+# slow torch path without them; vLLM carries its own).
+flash-linear-attention==0.5.2
+# Shared evaluator runtime (packages/evaluator/python) for the SuperNI rollout rewards.
+rouge==1.0.1
+sacrebleu==2.5.1
+immutabledict==4.2.1
+langdetect==1.0.9

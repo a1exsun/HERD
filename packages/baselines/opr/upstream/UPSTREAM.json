@@ -1,0 +1,20 @@
+{
+  "repository": "https://github.com/Yancey2024/OnPolicyReplay",
+  "commit": "1384d8823b250acf2725dc983aea6ac6e64a4283",
+  "excluded": [
+    "figure/ (pipeline image)",
+    ".gitignore"
+  ],
+  "files": {
+    "README.md": "c90ff88ae1756f5c28b014f3cd7399f7c291629ad0694e826e1c9cb3dead3ed6",
+    "core/OPRTrainer.py": "e64ac365391dd991e199723dd8749b129a7d256c4219b42536e0ff3dd7343db9",
+    "main.py": "407caf3d614b87153534aaf56a90881bbf1fd877769a5bcc8ee13eb4e209331b",
+    "requirements.txt": "3ed292ef95108bac9b1ef1d0076c6b2f3dbaa29655f2bbd6b5c6f04b8eaf6740",
+    "scripts/train.sh": "546a5f2a4288ea3a7e1d08250c8f7339ccc263f03008d3f498c10fb0c4783bbe",
+    "tools/data_preprocess.py": "bb5d283cb958b09b779254a85d5ee705c76330fc705d9aa8226f1d2b801a9f37",
+    "tools/eval.py": "8af6e69b4ddb4b81b4275c10fea03a0565cf398054431fe983d71f20ec2257eb",
+    "tools/generate_opr_ru.py": "58106db26efa44ab8f83210860ec7860b8f6cbe2e22f68c4a3dc42bf346d5ef0",
+    "tools/generate_opr_sc.py": "f726bbe07f23e9e2310d216cfb08993ff9cf9b56eaf87e7f5d83707d6188f234",
+    "tools/show_result.py": "e532adf5fbae6eaaf1db9d682eb7726c01eb4b4783ba7507fbd19f1649665d47"
+  }
+}

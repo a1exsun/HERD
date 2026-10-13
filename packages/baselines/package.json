@@ -1,0 +1,12 @@
+{
+  "name": "@hero/baselines",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "python:test": "uv run --locked --project python --python 3.12 pytest -c python/pyproject.toml python/tests",
+    "standalone:test": "python3 tests/check_standalone.py",
+    "python:validate": "uv run --locked --project python --python 3.12 python -m compileall -q -x '/\\.venv/|ophsd/upstream/|opr/upstream/' python/src python/tests base static-harness ace hcl-stable seq-lora uniform-replay treelora moram sdft opr ophsd tests",
+    "runners:test": "uv run --locked --project python --python 3.12 pytest -c python/pyproject.toml opr/tests && uv run --locked --project python --python 3.12 pytest -c python/pyproject.toml ophsd/tests"
+  }
+}

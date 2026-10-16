@@ -18,6 +18,11 @@ export function Method() {
     <section className="section" id="method">
       <div className="wrap">
         <h2 className="section-title reveal">Method</h2>
+        <p className="experiment-note">
+          This description follows the paper. The current release runner still permits a 0.05 rise in
+          replay-conditioned teacher NLL and selects residuals before training; the paper uses strict residual
+          improvement without answer replay and refreshes memory after merge. The runner is unchanged here.
+        </p>
 
         <div className="subsection" id="overview">
           <h3 className="reveal">Overview</h3>

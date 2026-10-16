@@ -124,6 +124,9 @@ export function Baselines() {
             <div key={term}><dt>{term}</dt><dd>{text}</dd></div>)}</dl>
         </div>
 
+        <p className="experiment-note">Paper Appendix B describes OPR and TreeLoRA as paper-based implementations;
+          this branch bundles upstream code. Dataset v1.1 also resamples NumGLUE-cm training and validation
+          records and requires new runs; the displayed paper results do not establish results for that revision.</p>
         <p className="experiment-note">See <code>packages/baselines/README.md</code>, each runner and its bundled upstream metadata for implementation details.</p>
       </div>
     </section>

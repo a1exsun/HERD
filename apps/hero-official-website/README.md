@@ -44,3 +44,24 @@ pnpm site:check
 
 The page retains its review-time noindex setting. Deployment requires the operator's
 own Cloudflare account configuration; no account or production route is bundled.
+
+## Paper alignment and current differences
+
+The method description and `data/paper-results.json` follow `docs/paper/herd.pdf`.
+All 84 Table 1 values were checked against page 6. The JSON records the PDF SHA-256;
+`public/herd.pdf` links to that exact repository PDF. Main results retain the paper's
+printed precision. The supplementary interactive charts preserve the unmodified
+presentation aggregates exported from `dev`; they are not a reconstruction of the PDF.
+
+| Area | Paper | Current branch / snapshot |
+| --- | --- | --- |
+| Skill guard | Strictly lower mean residual, no answer replay (Sections 2.3 and A) | `packages/hero-drift-constrained-opd/stream/run.py`, `evolve`: replay-conditioned teacher NLL may rise by 0.05 |
+| Residual refresh | Score under merged weights after distillation (Section 2.3) | The stream runner selects residuals before training under the previous checkpoint |
+| Main results | HERD forgetting 0.010; other Table 1 values as printed | The dev snapshot has HERD forgetting 0.009 and several other different rounded aggregates; retained only as labelled supplementary charts |
+| Baseline provenance | Appendix B describes OPR and TreeLoRA as paper-based implementations | The branch includes `opr/official`, `opr/upstream` and `treelora/upstream`; the baseline section describes the bundled code |
+| Dataset revision | Paper results refer to the reported experiments | Root README documents v1.1 NumGLUE-cm resampling and requires new runs; do not attribute the paper scores to v1.1 |
+
+This website change does not modify research code, the PDF, datasets or experimental
+results. The Code button points to the published `arr` research code from which the
+local `arXiv` branch was created; update it when `arXiv` is published. No arXiv identifier
+has been assigned here, and the supplied PDF remains the anonymous review manuscript.

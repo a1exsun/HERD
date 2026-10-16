@@ -687,6 +687,11 @@ export function Experiments() {
 
         <details className="experiment-block">
           <summary>Supplementary interactive charts · dev snapshot ({experiments.generated})</summary>
+          <p className="experiment-note">
+            These charts preserve the dev export rather than reconstructing measurements from the PDF. Some
+            aggregates differ: HERD forgetting is 0.009 here versus 0.010 in Table 1. Use the paper table above
+            for reported main results; the supplementary values have not been rewritten to match it.
+          </p>
         <div className="experiment-stats">
           {[
             ['HERD task mean', score(heroFinal.seenMean), `± ${score(heroSd?.seenMean)} over seeds · 95% CI ${score(ci?.[0])}–${score(ci?.[1])}`],

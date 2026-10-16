@@ -74,7 +74,6 @@ export function Hero() {
                   <li key={name}>{name}</li>
                 ))}
               </ul>
-              <span>Paper under review</span>
             </div>
             <div className="actions">
               <a className="btn btn-primary" href="#method">

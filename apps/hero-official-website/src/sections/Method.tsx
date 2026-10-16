@@ -58,17 +58,17 @@ export function Method() {
           </div>
           <div className="text reveal">
             <p>
-              Stage <Tex tex="t" /> receives <Tex tex={tx`\bar\theta_{t-1}`} /> and <Tex tex="H_{t-1}" /> and runs four
+              Stage <Tex tex="t" /> receives <Tex tex={tx`\bar\theta_{t-1}`} /> and <Tex tex="H_{t-1}" /> and runs three
               steps. (1) <em>Harness evolving:</em> the frozen base model <Tex tex={tx`\theta_0`} /> writes the current
-              task&rsquo;s skill from bounded evidence <Tex tex="A_t" />, and a harm guard decides whether it is
-              committed. (2) <em>Residual retention:</em> the examples that the committed <Tex tex="K_t" /> explains
-              worst are kept within a token budget. (3) <em>Drift-constrained distillation:</em> the student,{' '}
+              task&rsquo;s skill from bounded evidence <Tex tex="A_t" />, and a residual-improvement guard decides whether it is
+              committed. (2) <em>Drift-constrained distillation:</em> the student,{' '}
               <Tex tex={tx`\bar\theta_{t-1}`} /> with a fresh LoRA, learns from the frozen{' '}
               <Tex tex={tx`\bar\theta_{t-1}`} /> given the routed skill and the verified answer; the previous checkpoint
               anchors earlier tasks on retained probes and the immutable base model <Tex tex={tx`\theta_0`} /> anchors
-              general capabilities, each under a budget held by a Lagrange multiplier. (4) <em>Merge:</em> the LoRA is
-              merged into <Tex tex={tx`\bar\theta_t`} />, which is deployed alone and initializes stage{' '}
-              <Tex tex="t+1" />.
+              general capabilities, each under a budget held by a Lagrange multiplier. (3) <em>Merge and refresh:</em> the LoRA is
+              merged into <Tex tex={tx`\bar\theta_t`} />, then residuals are recomputed under the merged weights and
+              <Tex tex="K_t" /> to retain the hardest examples within the memory budget. The predictor deploys alone
+              and initializes stage <Tex tex="t+1" />.
             </p>
             <p>
               Only <Tex tex="K_t" /> evolves; the framework that executes it is fixed. A prompt runs only the skill
@@ -89,10 +89,10 @@ export function Method() {
             </Eq>
             <Eq
               name="Learner update"
-              tex={tx`\mathcal L_t=A(\mathcal L_{t-1},E_t),\qquad \mathcal L_t=(f_t,M_t),\quad M_t=H_t`}
+              tex={tx`\mathcal L_t=A(\mathcal L_{t-1},E_t),\qquad \mathcal L_t=(f_t,M_t),\quad M_t=(H_t,\mathcal G)`}
             >
               Any information carried across stages must be represented in <Tex tex={tx`\mathcal L_{t-1}`} />. In HERD
-              the retained state is the harness state.
+              the retained state includes the harness and the fixed general probes.
             </Eq>
             <Eq
               name="Budgets"

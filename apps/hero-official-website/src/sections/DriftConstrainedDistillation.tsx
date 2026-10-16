@@ -139,8 +139,8 @@ export function DriftConstrainedDistillation() {
           name="Constrained problem"
           tex={tx`\vartheta_t^\star\in\arg\min_{\vartheta}\ \mathcal L_t^{T}(\vartheta)\quad\text{s.t.}\quad \mathcal D_t^{C}(\vartheta)\le\epsilon_C,\ \ \mathcal D_t^{G}(\vartheta)\le\epsilon_G`}
         >
-          Optimization initializes <Tex tex={tx`\vartheta`} /> from <Tex tex={tx`\bar\theta_{t-1}`} />, where both
-          drifts are zero.
+          Optimization initializes <Tex tex={tx`\vartheta`} /> from <Tex tex={tx`\bar\theta_{t-1}`} />. Checkpoint drift starts at zero; base drift can
+          already be nonzero because earlier stages changed the weights.
         </Eq>
         <Eq
           name="Lagrangian update"

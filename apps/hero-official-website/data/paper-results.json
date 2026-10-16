@@ -1,0 +1,183 @@
+{
+  "source": "docs/paper/herd.pdf, Table 1 (page 6)",
+  "sha256": "57c5175c1a3b51da2e6a5521c58d2fd66623522def356e04315cfba4b812037b",
+  "columns": [
+    "AA",
+    "Acquisition",
+    "Forgetting",
+    "BWT",
+    "G-test",
+    "\u0394C",
+    "Worst \u0394C"
+  ],
+  "rows": [
+    {
+      "id": "hero",
+      "name": "HERD",
+      "family": "This work",
+      "values": [
+        0.706,
+        0.713,
+        0.01,
+        -0.007,
+        0.774,
+        -0.063,
+        -0.13
+      ]
+    },
+    {
+      "id": "base",
+      "name": "Base",
+      "family": "Control",
+      "values": [
+        0.419,
+        0.419,
+        0,
+        0,
+        0.837,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "static-harness",
+      "name": "Static harness",
+      "family": "Control",
+      "values": [
+        0.432,
+        0.432,
+        0,
+        0,
+        0.791,
+        -0.046,
+        -0.135
+      ]
+    },
+    {
+      "id": "hcl-stable",
+      "name": "HCL-Stable",
+      "family": "Context",
+      "values": [
+        0.433,
+        0.435,
+        0.003,
+        -0.002,
+        0.823,
+        -0.014,
+        -0.085
+      ]
+    },
+    {
+      "id": "ace",
+      "name": "ACE",
+      "family": "Context",
+      "values": [
+        0.427,
+        0.428,
+        0.001,
+        -0.001,
+        0.748,
+        -0.089,
+        -0.32
+      ]
+    },
+    {
+      "id": "seq-lora",
+      "name": "Seq-LoRA",
+      "family": "Weights",
+      "values": [
+        0.694,
+        0.715,
+        0.025,
+        -0.022,
+        0.597,
+        -0.24,
+        -0.665
+      ]
+    },
+    {
+      "id": "uniform-replay",
+      "name": "Uniform replay",
+      "family": "Weights",
+      "values": [
+        0.699,
+        0.711,
+        0.02,
+        -0.013,
+        0.599,
+        -0.238,
+        -0.675
+      ]
+    },
+    {
+      "id": "opr",
+      "name": "OPR",
+      "family": "Weights",
+      "values": [
+        0.69,
+        0.705,
+        0.024,
+        -0.016,
+        0.614,
+        -0.223,
+        -0.625
+      ]
+    },
+    {
+      "id": "treelora",
+      "name": "TreeLoRA",
+      "family": "Weights",
+      "values": [
+        0.686,
+        0.711,
+        0.032,
+        -0.026,
+        0.605,
+        -0.232,
+        -0.635
+      ]
+    },
+    {
+      "id": "moram",
+      "name": "MoRAM",
+      "family": "Weights",
+      "values": [
+        0.693,
+        0.701,
+        0.019,
+        -0.009,
+        0.637,
+        -0.2,
+        -0.65
+      ]
+    },
+    {
+      "id": "sdft",
+      "name": "SDFT",
+      "family": "Weights",
+      "values": [
+        0.021,
+        0.024,
+        0.003,
+        -0.003,
+        0.172,
+        -0.665,
+        -0.77
+      ]
+    },
+    {
+      "id": "ophsd",
+      "name": "OPHSD",
+      "family": "Hybrid",
+      "values": [
+        0.62,
+        0.639,
+        0.021,
+        -0.02,
+        0.582,
+        -0.255,
+        -0.645
+      ]
+    }
+  ]
+}

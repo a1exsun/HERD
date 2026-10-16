@@ -1,11 +1,11 @@
 import { experiments } from '../lib/experiments.ts'
 
-type Source = 'control' | 'rerun'
+type Source = 'control' | 'implementation'
 
 const sourceGroups: { id: Source; title: string; text: string; methods: string[] }[] = [
   {
-    id: 'rerun', title: 'From official code',
-    text: 'Every published method runs the authors’ code or an implementation aligned with it. The rows shown for OPR, TreeLoRA and HCL predate their reruns on the official code and will be replaced by those reruns. The rows for ACE, MoRAM, OPHSD and SDFT will be added when their runs complete.',
+    id: 'implementation', title: 'Published methods',
+    text: 'The release contains all seven published comparison methods. ACE, MoRAM, OPR, TreeLoRA and OPHSD include upstream code or adaptations; SDFT and HCL-Stable use local implementations. The main results follow the paper.',
     methods: ['opr', 'treelora', 'hcl-stable', 'ace', 'moram', 'ophsd', 'sdft'],
   },
   {
@@ -15,7 +15,7 @@ const sourceGroups: { id: Source; title: string; text: string; methods: string[]
   },
 ]
 
-const RERUN_NAMES: Record<string, string> = { ace: 'ACE', moram: 'MoRAM', ophsd: 'OPHSD', sdft: 'SDFT' }
+const METHOD_NAMES: Record<string, string> = { ace: 'ACE', moram: 'MoRAM', ophsd: 'OPHSD', sdft: 'SDFT' }
 
 interface Change {
   id: string
@@ -31,40 +31,31 @@ interface Change {
 
 const CHANGES: Change[] = [
   {
-    id: 'opr', source: 'rerun', paper: { label: 'arXiv:2605.29495', href: 'https://arxiv.org/abs/2605.29495' },
-    commit: 'Yancey2024/OnPolicyReplay @ 1384d88 (read only)',
-    size: 'Algorithm as written. The changes are the reward function and the training budget.',
-    kept: 'Algorithm 1. After each stage the model answers every past training prompt (temperature 0.1, 512 tokens). The OPR-RU ranking fills a buffer of ⌊ρ·n⌋ records, split evenly across earlier tasks, and the buffer is rebuilt each stage. Training is plain token-level cross-entropy with a cosine schedule. ρ = 0.01, the paper’s main setting.',
-    changed: [
-      'Rewards come from the shared scorer instead of per-task reward functions.',
-      'LoRA rank 32 at 1e-4 instead of full fine-tuning at 1e-5, with a 16,384-token ceiling instead of 2,048.',
-    ],
-    why: 'The paper argues that the replay filter should use the evaluation metric, and the shared scorer is that metric for all 25 tasks. One 40 GB GPU per job rules out full fine-tuning, and every weight baseline uses the same adapter.',
-    aligned: 'Algorithmically yes. The authors’ code uses a linear schedule and drops the quota remainder; the paper’s text is followed instead.',
+    id: 'opr', source: 'implementation', paper: { label: 'arXiv:2605.29495', href: 'https://arxiv.org/abs/2605.29495' },
+    commit: 'Yancey2024/OnPolicyReplay @ 1384d88',
+    size: 'The branch bundles the upstream reference and an adapted official runner.',
+    kept: 'OPR-RU generates responses for earlier tasks and ranks them with the shared scorer, with replay ratio 0.01 and equal task quotas.',
+    changed: ['The runner maps the 25-task stream to the official data layout and uses the shared model, scorer and training budget.'],
+    why: 'The adaptations place replay under the same TRACE+17 evaluation protocol.',
+    aligned: 'The runnable adaptation is in opr/official; edits relative to opr/upstream carry a [HERO] marker.',
   },
   {
-    id: 'treelora', source: 'rerun', paper: { label: 'ICML 2025', href: 'https://proceedings.mlr.press/v267/qian25b.html' },
-    commit: 'ZinYY/TreeLoRA @ 1c7260c (read only)',
-    size: 'A full re-implementation with one documented gap: the internal-node bound of Eq. 2.',
-    kept: 'Layer-wise LoRA-A fingerprints (as in the authors’ code), a lower-confidence-bound bandit that picks an earlier task per layer, a tree rebuilt after every task, a regularizer with λ = 0.5 ramped as upstream does, and one LoRA carried across tasks.',
-    changed: [
-      'Tree depth comes from the actual Qwen3.5 backbone instead of the paper’s 64-layer setting.',
-      'Descent uses the leaf bound: Eq. 2’s internal-node form has no unambiguous reading, and the authors’ code does not implement it either.',
-    ],
-    why: 'The model differs from the paper’s, and the typeset equation cannot be transcribed without inventing a formula.',
-    aligned: 'Partly. Two re-implementation choices weaken the mechanism.',
+    id: 'treelora', source: 'implementation', paper: { label: 'ICML 2025', href: 'https://proceedings.mlr.press/v267/qian25b.html' },
+    commit: 'ZinYY/TreeLoRA @ 1c7260c',
+    size: 'The branch bundles the upstream KD tree and an adapted stage runner.',
+    kept: 'The upstream tree, task fingerprints and regularized training step, with regularizer weight 0.5 and one adapter carried across stages.',
+    changed: ['The runner uses Qwen3.5-4B and the shared update budget, and seals the adapter, optimizer, fingerprints and tree after each stage.'],
+    why: 'The stage runner integrates the method with the common stream and evaluation schedule.',
+    aligned: 'Focused tests compare the local training loop with a literal upstream transcription and check upstream file hashes.',
   },
   {
-    id: 'hcl-stable', source: 'rerun', paper: { label: 'arXiv:2608.19013', href: 'https://arxiv.org/abs/2608.19013' },
-    commit: 'Paper, Section 3 (no code at the time of the run)',
-    size: 'A full clean-room reproduction, written before the authors released their code on 30 September 2026.',
-    kept: 'A frozen model with a jointly versioned harness of Task Interface, Experience Memory, Capability Map and Adaptive Router. Candidate updates stay isolated until the Continual Evaluator verifies current-task improvement, historical retention and validity. The stable profile uses the paper’s strict setting, so a candidate may not break any historical anchor that the deployed harness still solves.',
-    changed: [
-      'Inference. The whole harness is rendered into one system prompt. The official code makes several calls per item: task-interface structuring, workflow planning, memory selection and the final answer.',
-      'Experience memory. Nothing is written automatically. The official code writes raw memory with the gold answer as feedback and consolidates abstract memory and skills with the model.',
-    ],
-    why: 'The paper gave no code or prompts when the run started, so the reproduction had to design its own prompts and initial artifacts.',
-    aligned: 'Partly. The evaluator’s acceptance rule follows the paper; the multi-call inference and the automatic memory do not. The next release reruns the official code.',
+    id: 'hcl-stable', source: 'implementation', paper: { label: 'arXiv:2608.19013', href: 'https://arxiv.org/abs/2608.19013' },
+    commit: 'Local implementation of the paper’s stable profile',
+    size: 'A frozen model with a versioned Task Interface, Experience Memory, Capability Map and Adaptive Router.',
+    kept: 'One candidate per component per stage; commit only with validation gain of at least 0.01 and no broken historical anchor.',
+    changed: ['The components are rendered into one system prompt and served by the local backend.'],
+    why: 'The stable profile evaluates harness changes under a bounded context and historical-retention check.',
+    aligned: 'This is the branch’s local stable-profile implementation; it is not a claim of identical upstream inference.',
   },
 ]
 
@@ -78,18 +69,18 @@ const ALIGNMENT = [
   ['Stage 0', 'Every learned method starts from the unchanged model’s measured predictions.'],
   ['Training budget', 'Every weight method gets 32 updates of 32 records per stage, on the same text-backbone linear layers, with LoRA rank 32 and alpha 64 unless the method defines its own adapter. HERD uses the same rank, learning rate and update budget.'],
   ['Matched state', 'Uniform replay holds exactly HERD’s residual-memory budget.'],
-  ['Independence', 'Each package is self-contained, with its own lock file. A standalone test copies every package outside the repository, blocks imports between them and runs the scorer conformance cases.'],
+  ['Independence', 'Nine packages have standalone environments and scorer tests. OPR and OPHSD bundle the shared hero_baselines package into their jobs.'],
 ] as const
 
 export function Baselines() {
   const method = (id: string) => experiments.methods.find((m) => m.id === id)
-  const name = (id: string) => method(id)?.name ?? RERUN_NAMES[id] ?? id
+  const name = (id: string) => method(id)?.name ?? METHOD_NAMES[id] ?? id
   return (
     <section className="section" id="baselines">
       <div className="wrap experiments-content">
         <header>
           <h2 className="section-title reveal">Baselines</h2>
-          <p className="experiment-lede">Every comparison method runs on self-contained code under one contract. Seven have complete runs in this release; four are being rerun on their official code. This section answers three questions: where each method’s code comes from, what was changed in it and why, and how the methods are kept comparable.</p>
+          <p className="experiment-lede">The paper compares eleven methods under one evaluation protocol. This section describes the implementations included in the arXiv branch, their adaptations and the shared evaluation settings.</p>
         </header>
 
         <div className="experiment-block">
@@ -99,7 +90,7 @@ export function Baselines() {
               <h4>{group.title}</h4>
               <p>{group.text}</p>
               <ul>{group.methods.map((id) => {
-                const label = method(id)?.short ?? RERUN_NAMES[id] ?? id
+                const label = method(id)?.short ?? METHOD_NAMES[id] ?? id
                 return <li key={id}>{CHANGES.some((c) => c.id === id) ? <a href={`#baseline-${id}`}>{label}</a> : label}</li>
               })}</ul>
             </article>
@@ -133,7 +124,7 @@ export function Baselines() {
             <div key={term}><dt>{term}</dt><dd>{text}</dd></div>)}</dl>
         </div>
 
-        <p className="experiment-note">Every method’s <code>SOURCE.md</code> under <code>packages/baselines/</code> records the inspected upstream commit and each adaptation.</p>
+        <p className="experiment-note">See <code>packages/baselines/README.md</code>, each runner and its bundled upstream metadata for implementation details.</p>
       </div>
     </section>
   )

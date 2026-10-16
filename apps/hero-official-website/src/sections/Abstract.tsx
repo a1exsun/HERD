@@ -7,8 +7,7 @@ export function Abstract() {
         <h2 className="section-title reveal">Abstract</h2>
         <p className="abstract-text reveal">
           Continual learning requires a model to keep acquiring new skills and knowledge without compromising its
-          existing capabilities. Parametric methods suffer from catastrophic forgetting and loss of plasticity, and are
-          insensitive to critical samples. Non-parametric methods, such as prompts, skills, and harnesses, leverage
+          existing capabilities. Parametric methods suffer from catastrophic forgetting and loss of plasticity. Non-parametric methods, such as prompts, skills, and harnesses, leverage
           in-context learning and dominate in practice, but are bounded by context length and lossy plain-text
           compression. We propose HERD (Harness-Evolving Recursive Distillation), a hybrid continual learning system
           that learns quickly in an{' '}
@@ -25,8 +24,8 @@ export function Abstract() {
           capabilities. The resulting predictor{' '}
           <mark style={vars({ '--mark': 'var(--deploy-soft)' })}>needs no harness at inference</mark>. On the 25-stage
           TRACE+17 stream with Qwen3.5-4B, under fixed memory and compute budgets, HERD matches the strongest
-          parametric baseline in new-task acquisition while showing the least forgetting among weight-updating methods
-          and the strongest retention of general capabilities.
+          parametric baseline in new-task acquisition, with forgetting of 0.010 and the strongest retention of general
+          capabilities among weight-updating methods. SDFT has lower measured forgetting but collapses in acquisition.
         </p>
       </div>
     </section>

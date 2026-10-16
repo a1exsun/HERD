@@ -1,3 +1,4 @@
+import { PaperResults } from './PaperResults.tsx'
 import { useState } from 'react'
 import { ChartFigure, Dumbbell, Forest, Legend, LineChart, MiniChart, ScatterChart } from '../components/Charts.tsx'
 import { heat } from '../lib/css.ts'
@@ -20,7 +21,6 @@ const heroSd = hero.depthsSd?.['25']
 const seedCount = 3
 const range = (values: number[]) => [Math.min(...values), Math.max(...values)] as const
 const weights = learners.filter((m) => m.family === 'parametric')
-const RERUNNING = 'ACE, MoRAM, OPHSD and SDFT'
 
 /** Mean ± spread over seeds, when the method has several. */
 function Value({ value, sd, digits = 3, sign }: { value: number | undefined; sd?: number; digits?: number; sign?: boolean }) {
@@ -67,7 +67,7 @@ function Comparison({ depth }: { depth: number }) {
   return (
     <div className="experiment-scroll" role="region" aria-label="Method comparison" tabIndex={0}>
       <table className="experiment-table">
-        <caption>After {depth} tasks · bold marks the best learning method in each column · HERD: mean ± standard deviation over {seedCount} seeds</caption>
+        <caption>After {depth} tasks · bold marks the best learning method in each column · Learning methods: mean ± standard deviation over {seedCount} seeds</caption>
         <thead><tr>
           <th scope="col">Method</th>
           {COLUMNS.map((column) => <th scope="col" key={column.id}>{column.label} {column.better === 'high' ? '↑' : '↓'}</th>)}
@@ -524,7 +524,7 @@ function CategoryTrajectories() {
             x={{ min: 1, max: 25, ticks: [1, 8, 16, 25] }} y={{ min: 0, max: 1, ticks: [0, 0.5, 1] }} />
         </figure>
       ))}</div>
-      <p className="experiment-note">The 40-item probe of each category after every stage, mean over seeds with their spread; dashed: the unchanged model on the same items. With 40 items one answer moves a score by 0.025, so single-stage changes are within noise.</p>
+      <p className="experiment-note">The 40-item probe of each category after every stage, mean over seeds with their spread; dashed: the unchanged model on the same items. With 40 items one answer moves a score by 0.025, so single-stage changes should be read cautiously.</p>
     </div>
   )
 }
@@ -550,7 +550,7 @@ function InsideHero() {
     <div className="experiment-block">
       <h3>Inside HERD</h3>
       <p className="experiment-reading">
-        Every stage of every seed records what the harness, the guard, the drift constraints and the distillation did.
+        The dev snapshot records what the harness, guard, drift constraints and distillation did at each stage.
         The figures show the mean over {seedCount} seeds; bands show the spread.
       </p>
       <div className="experiment-grid">
@@ -663,7 +663,7 @@ function AggregateSummary() {
           </tbody>
         </table>
       </div>
-      <p className="experiment-note">Intervals resample the 100 test items of each task (4,000 draws) from the seed-mean item scores. Baselines are single runs with seed 42.</p>
+      <p className="experiment-note">Intervals resample the 100 test items of each task (4,000 draws) from the seed-mean item scores. Learning-method aggregates use seeds 42, 43 and 44.</p>
     </div>
   )
 }
@@ -680,10 +680,13 @@ export function Experiments() {
         <header>
           <h2 className="section-title reveal">Experiments</h2>
           <p className="experiment-lede">Learning a new task is only half the job. A continual learner also needs to keep earlier skills and the general abilities it started with. We follow Qwen3.5-4B through 25 tasks to see how these goals develop together.</p>
-          <p className="experiment-note">TRACE+17 · 8 TRACE + 17 SuperNI tasks · {methods.length - 1} baselines with complete runs · HERD: mean ± standard deviation over seeds 42, 43, 44 · exported {experiments.generated}</p>
-          <p className="experiment-status">{RERUNNING} are being rerun on implementations aligned with their official code and will be added in the next release.</p>
+          <p className="experiment-note">TRACE+17 · 8 TRACE + 17 SuperNI tasks · {methods.length - 1} comparison methods · paper results below · seeds 42, 43, 44</p>
         </header>
 
+        <PaperResults />
+
+        <details className="experiment-block">
+          <summary>Supplementary interactive charts · dev snapshot ({experiments.generated})</summary>
         <div className="experiment-stats">
           {[
             ['HERD task mean', score(heroFinal.seenMean), `± ${score(heroSd?.seenMean)} over seeds · 95% CI ${score(ci?.[0])}–${score(ci?.[1])}`],
@@ -741,6 +744,7 @@ export function Experiments() {
         <CategoryTrajectories />
         <InsideHero />
         <AggregateSummary />
+        </details>
       </div>
     </section>
   )

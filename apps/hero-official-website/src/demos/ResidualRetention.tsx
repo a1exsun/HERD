@@ -137,8 +137,8 @@ export function ResidualRetention() {
       caption={
         <>
           TopBudget selection under different committed skill registries and budgets. Registries A to C explain
-          progressively more records. The residual is the target NLL under the frozen previous checkpoint executing
-          the registry. Bar length shows token count and shading shows the residual. Values are illustrative.
+          progressively more records. The residual is the target NLL under the merged checkpoint executing
+          the registry, refreshed after distillation. Bar length shows token count and shading shows the residual. Values are illustrative.
         </>
       }
     >

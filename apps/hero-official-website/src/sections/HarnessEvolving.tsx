@@ -36,14 +36,11 @@ export function HarnessEvolving() {
             Avoid (grounded in the mistakes), and Examples. The instructions are clipped to 768 tokens.
           </p>
           <p>
-            The frozen teacher is the skill&rsquo;s only consumer during training, so the guard measures exactly what
-            distillation reads and needs no generation. The candidate <Tex tex="K'_t" /> is committed unless its
-            instructions are empty, the serialized registry exceeds <Tex tex="B_K=24{,}576" /> tokens, or it raises the
-            teacher&rsquo;s mean negative log-likelihood of the verified answers in <Tex tex="A_t" /> by more than{' '}
-            <Tex tex={tx`\tau_K=0.05`} /> nats per token. Because the teacher sees the verified answer replayed, its
-            likelihood is already near its maximum, so a gain is rarely measurable; a large rise means the skill
-            fights the answer. Otherwise <Tex tex="K_t=K_{t-1}" />, with no retry. Proposal and guard costs count
-            toward <Tex tex="B_C" />.
+            The candidate <Tex tex="K'_t" /> is committed only if its instructions are non-empty, the serialized
+            registry fits <Tex tex="B_K=24{,}576" /> tokens, and it strictly lowers the frozen checkpoint&rsquo;s mean
+            residual on <Tex tex="A_t" />. The checkpoint sees the routed skill and prompt, without the verified
+            answer replayed in context. Otherwise <Tex tex="K_t=K_{t-1}" />, with no retry. Proposal and guard costs
+            count toward <Tex tex="B_C" />.
           </p>
         </div>
         <GuardedEvolution />
@@ -54,8 +51,8 @@ export function HarnessEvolving() {
         <div className="text reveal">
           <p>
             For each <Tex tex={tx`z=(x,y^\star)`} /> in <Tex tex={tx`\mathcal R_{t-1}^{\mathrm{task}}\cup A_t`} />, the
-            compression residual is the mean target negative log-likelihood under the frozen{' '}
-            <Tex tex={tx`\bar\theta_{t-1}`} /> executing the committed <Tex tex="K_t" /> on <Tex tex="x" />, with no
+            compression residual is refreshed after distillation and merge: the mean target negative log-likelihood under{' '}
+            <Tex tex={tx`\bar\theta_t`} /> executing the committed <Tex tex="K_t" /> on <Tex tex="x" />, with no
             target in context. TopBudget orders records by decreasing residual, breaking ties by stable identifier, and
             scans this order once, adding a record only if its complete serialization fits the remaining budget{' '}
             <Tex tex={tx`B_R-B_G=24{,}576`} /> tokens. Because the scoring model sees the skill but not{' '}
@@ -92,15 +89,15 @@ export function HarnessEvolving() {
         </Eq>
         <Eq
           name="Commit rule"
-          tex={tx`K_t=\begin{cases}K'_t & \text{if } s_t\neq\varnothing,\ \mathrm{Tok}(K'_t)\le B_K,\ \mathrm{NLL}_t(K'_t)-\mathrm{NLL}_t(K_{t-1})\le\tau_K\\ K_{t-1} & \text{otherwise}\end{cases}`}
+          tex={tx`K_t=\begin{cases}K'_t & \text{if } s_t\neq\varnothing,\ \mathrm{Tok}(K'_t)\le B_K,\ \mathrm{NLL}_t(K'_t)<\mathrm{NLL}_t(K_{t-1})\\ K_{t-1} & \text{otherwise}\end{cases}`}
         >
-          <Tex tex={tx`\mathrm{NLL}_t(K)`} /> is the frozen teacher&rsquo;s mean per-token negative log-likelihood of
-          the verified answers in <Tex tex="A_t" />, with the skill routed by <Tex tex="K" /> and the answer replayed
-          as in distillation.
+          <Tex tex={tx`\mathrm{NLL}_t(K)`} /> is the frozen checkpoint&rsquo;s mean per-token negative log-likelihood of
+          the verified answers in <Tex tex="A_t" />, with the skill routed by <Tex tex="K" /> and no answer replay
+          in the prefill.
         </Eq>
         <Eq
           name="Compression residual"
-          tex={tx`r_t(z)=-\frac{1}{|y^\star|}\sum_{k=1}^{|y^\star|}\log\pi_{\bar\theta_{t-1}}\bigl(y_k^\star\mid \Omega_{\mathcal F}(K_t,x),\,x,\,y_{<k}^\star\bigr)`}
+          tex={tx`r_t(z)=-\frac{1}{|y^\star|}\sum_{k=1}^{|y^\star|}\log\pi_{\bar\theta_t}\bigl(y_k^\star\mid \Omega_{\mathcal F}(K_t,x),\,x,\,y_{<k}^\star\bigr)`}
         >
           A record whose prompt and answer exceed the training length limit receives{' '}
           <Tex tex={tx`r_t(z)=+\infty`} />.

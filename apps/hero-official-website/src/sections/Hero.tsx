@@ -90,12 +90,8 @@ export function Hero() {
                   />
                 </svg>
               </a>
-              <span className="btn" aria-disabled="true">
-                Paper <small>coming soon</small>
-              </span>
-              <span className="btn" aria-disabled="true">
-                Code <small>coming soon</small>
-              </span>
+              <a className="btn" href="/herd.pdf" target="_blank" rel="noreferrer">Paper (PDF)</a>
+              <a className="btn" href="https://github.com/a1exsun/HERD/tree/arr" target="_blank" rel="noreferrer">Code</a>
             </div>
           </div>
         </div>

@@ -6,7 +6,7 @@ import { tx } from '../lib/tex.ts'
 import { vars } from '../lib/css.ts'
 import { useCarousel, useInView } from '../lib/hooks.ts'
 
-const STEPS = ['Previous state', 'Harness update', 'Harness state', 'Predictor update', 'Updated state']
+const STEPS = ['Previous state', 'Harness update', 'Training context', 'Predictor update', 'Updated state']
 
 export function StageAnatomy() {
   const ref = useRef<HTMLElement>(null)
@@ -27,11 +27,11 @@ export function StageAnatomy() {
     <>
       <b>Harness update.</b> The frozen base model <Tex tex={tx`\theta_0`} /> writes the current task&rsquo;s skill
       from bounded evidence <Tex tex="A_t" /> and the mistakes of the frozen <Tex tex={tx`\bar\theta_{t-1}`} />. The
-      skill is committed unless it harms the teacher, and the worst-explained examples are retained.
+      skill is committed only if it lowers the checkpoint&rsquo;s mean residual on the evidence window.
     </>,
     <>
-      <b>Harness state.</b> The committed skill registry <Tex tex="K_t" /> and the residual memory{' '}
-      <Tex tex={tx`\mathcal R_t`} /> form <Tex tex="H_t" />, with <Tex tex={tx`\mathrm{Tok}(H_t)\le B_M`} />.
+      <b>Training context.</b> The committed skill registry <Tex tex="K_t" /> conditions the teacher; previous
+      residual memory <Tex tex={tx`\mathcal R_{t-1}`} /> supplies checkpoint probes.
     </>,
     <>
       <b>Predictor update.</b> Drift-constrained distillation trains on <Tex tex={tx`D_t^{\mathrm{train}}`} />: the
@@ -40,7 +40,8 @@ export function StageAnatomy() {
       <Tex tex={tx`\mathcal G`} /> measure the two drifts, each held under its budget by a Lagrange multiplier.
     </>,
     <>
-      <b>Updated state.</b> <Tex tex="H_t" /> and <Tex tex={tx`\bar\theta_t`} /> are passed to stage{' '}
+      <b>Updated state.</b> After merge, refresh residuals under the new weights to form <Tex tex="H_t" />.
+      <Tex tex="H_t" /> and <Tex tex={tx`\bar\theta_t`} /> are passed to stage{' '}
       <Tex tex="t+1" />. Only <Tex tex={tx`\bar\theta_t`} /> is deployed.
     </>,
   ]
@@ -111,10 +112,10 @@ export function StageAnatomy() {
               1 · Harness update
             </text>
             <text className="t-label" textAnchor="middle" y={0}>
-              skill by θ₀ + harm guard
+              skill by θ₀ + residual guard
             </text>
             <text className="t-label" textAnchor="middle" y={20}>
-              residual retention
+              strict improvement
             </text>
             <text className="t-small" textAnchor="middle" y={42}>
               <tspan>evidence </tspan>
@@ -126,18 +127,18 @@ export function StageAnatomy() {
 
           <Node x={640} y={100} w={146} h={88} kind="harness" {...at(2)} onClick={() => loop.goto(2)}>
             <text textAnchor="middle" y={-6}>
-              <M s="H_{t}" size={18} />
+              <M s="K_{t}" size={18} />
             </text>
             <text textAnchor="middle" y={20}>
               <tspan className="t-small">(</tspan>
               <M s="K_{t}" size={14} />
               <tspan className="t-small">, </tspan>
-              <M s="cal:R_{t}" size={14} />
+              <M s="cal:R_{t−1}" size={14} />
               <tspan className="t-small">)</tspan>
             </text>
           </Node>
           <text className="t-small" x={640} y={38} textAnchor="middle" opacity={k < 2 ? 0.3 : 1}>
-            bounded harness state
+            skill + previous memory
           </text>
 
           <Node x={830} y={270} w={254} h={116} kind="optim" band={32} {...at(3)} onClick={() => loop.goto(3)}>
@@ -197,7 +198,7 @@ export function StageAnatomy() {
             </text>
           </Node>
           <text className="t-small" x={1090} y={200} textAnchor="middle" opacity={k < 4 ? 0.3 : 1}>
-            passed to stage t + 1
+            refreshed after merge
           </text>
         </svg>
       </div>

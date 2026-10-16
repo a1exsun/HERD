@@ -14,14 +14,14 @@ interface Proposal {
   format: string
   /** Size of the serialized registry once the skill is added. */
   registry: number
-  /** Change in the frozen teacher's mean NLL of the verified answers in A_t (nats per token). */
+  /** Change in the frozen checkpoint's mean residual NLL of the verified answers in A_t (nats per token). */
   dNll: number
   /** Records of A_t shown to the proposer (at most 16) and mistakes of the frozen checkpoint (at most 4). */
   candidates: number
   mistakes: number
 }
 
-/** The first eight stages of the seed-42 run (stage.json guard records), with skills shortened to their Format line. */
+/** Illustrative proposals for the first eight task types; values demonstrate the paper's strict residual guard. */
 const PROPOSALS: Proposal[] = [
   { prefix: '判断以下文本对指定对象的态度，选择一项：A.支持，B.反对，C.中立。…', format: 'Output a single character: A, B, or C.', registry: 431, dNll: 0.0023, candidates: 16, mistakes: 4 },
   { prefix: 'What is the monetary policy stance for the following text? …', format: 'Output exactly one letter (A, B, or C) representing the monetary policy stance.', registry: 874, dNll: 0.0279, candidates: 16, mistakes: 4 },
@@ -33,7 +33,7 @@ const PROPOSALS: Proposal[] = [
   { prefix: 'Provide a simplified version of the following paragraph in German. …', format: 'A simplified German summary of the input text in 2–4 sentences, focusing on the main event or conclusion.', registry: 3336, dNll: -0.0093, candidates: 13, mistakes: 4 },
 ]
 
-const TAU = 0.05
+const TAU = 0
 const BUDGET = 24576
 const RANGE = 0.1
 
@@ -54,10 +54,10 @@ function decide(): Decision[] {
   const registry: Entry[] = []
   return PROPOSALS.map((proposal, stage) => {
     const replaced = registry.find((e) => e.proposal.prefix === proposal.prefix)
-    const checks = { empty: proposal.format.length === 0, harm: proposal.dNll > TAU, size: proposal.registry > BUDGET }
+    const checks = { empty: proposal.format.length === 0, harm: proposal.dNll >= TAU, size: proposal.registry > BUDGET }
     const reasons: ReactNode[] = []
     if (checks.empty) reasons.push(<>the instructions are empty</>)
-    if (checks.harm) reasons.push(<>the teacher&rsquo;s NLL rises by more than <Tex tex={tx`\tau_K`} /></>)
+    if (checks.harm) reasons.push(<>the mean residual does not decrease</>)
     if (checks.size) reasons.push(<><Tex tex={tx`\mathrm{Tok}(K'_t)`} /> exceeds <Tex tex="B_K" /></>)
     const commit = reasons.length === 0
     if (commit) {
@@ -87,7 +87,7 @@ const signed = (v: number) => `${v >= 0 ? '+' : '−'}${Math.abs(v).toFixed(4)}`
 const thousands = (v: number) => v.toLocaleString('en-US')
 
 function HarmRow({ value }: { value: number }) {
-  const pass = value <= TAU
+  const pass = value < TAU
   const clamp = (v: number) => Math.max(-RANGE, Math.min(RANGE, v))
   const pct = (v: number) => 50 + (clamp(v) / RANGE) * 50
   const left = Math.min(pct(0), pct(value))
@@ -98,7 +98,7 @@ function HarmRow({ value }: { value: number }) {
         <span>
           <Tex tex={tx`\Delta\mathrm{NLL}`} />{' '}
           <span style={{ color: 'var(--muted)' }}>
-            teacher on verified answers in <Tex tex="A_t" />, tolerance +{TAU.toFixed(2)}
+            checkpoint with skill only on <Tex tex="A_t" />, must decrease
           </span>
         </span>
         <span className="val">{signed(value)}</span>
@@ -159,22 +159,21 @@ export function GuardedEvolution() {
       ref={ref}
       label="Figure 4"
       title="Guarded evolution"
-      schematic={false}
+      schematic
       progress={{ count: PROPOSALS.length, index: stage, label: `Stage ${stage + 1} · ${TRACE8[stage].name}` }}
       onAdvance={loop.advance}
       onHover={setHover}
       hint="Paused · click for next step"
       legend={
         <span className="fig-params">
-          <Tex tex={tx`\tau_K = 0.05`} /> nats per token, <Tex tex={tx`B_K = 24{,}576`} /> tokens
+          <Tex tex={tx`\Delta\mathrm{NLL} < 0`} /> nats per token, <Tex tex={tx`B_K = 24{,}576`} /> tokens
         </span>
       }
       caption={
         <>
-          The skill registry over the first eight stages of the seed-42 run. At each stage the frozen base model writes
-          one skill from evidence <Tex tex="A_t" /> and the frozen checkpoint&rsquo;s mistakes, and the guard checks
-          it. Skills are shortened to their Format line. Every proposal in the reported runs was committed; NumGLUE-ds
-          shares its routing prefix with NumGLUE-cm and replaces its skill.
+          Illustrative skill proposals and residual changes. The frozen base writes each skill; the checkpoint
+          tests it without replaying the answer. Only strict improvement within the registry budget commits a skill.
+          These values demonstrate the rule and are not experimental measurements.
         </>
       }
     >
@@ -243,7 +242,7 @@ export function GuardedEvolution() {
             <span>
               {commit ? (
                 <>
-                  The skill is non-empty, fits the budget, and does not harm the teacher, so{' '}
+                  The skill is non-empty, fits the budget, and lowers the mean residual, so{' '}
                   <Tex tex="K_t = K'_t" />.
                   {replaces !== null && <> It replaces the {TRACE8[replaces].name} skill, which has the same prefix.</>}
                 </>

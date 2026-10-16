@@ -43,7 +43,7 @@ export function StreamLoop() {
     </>,
     <>
       <b>Harness update.</b> The base model writes a skill for {task.name}, and the harm guard commits it into{' '}
-      <Tex tex={`K_{${s + 1}}`} />. High-residual examples are retained in{' '}
+      <Tex tex={`K_{${s + 1}}`} />. After distillation and merge, high-residual examples are retained in{' '}
       <Tex tex={tx`\mathcal R_{${String(s + 1)}}`} />.
     </>,
     <>

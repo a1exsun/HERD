@@ -13,7 +13,6 @@ import { fileURLToPath } from 'node:url'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createServer } from 'vite'
-import { readExperiments } from './experiments.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const outDir = resolve(root, '../../docs/assets/readme')
@@ -45,7 +44,7 @@ const FONTS = `
   --font-math: KaTeX_Math, 'Times New Roman', Times, serif;`
 
 const vars = (theme) =>
-  `svg{${Object.entries(THEMES[theme]).map(([k, v]) => `--${k}:${v};`).join('')}${FONTS}}`
+  `svg{${Object.entries(THEMES[theme]).map(([k, v]) => `--${k}:${v};`).join('')}${FONTS}}@media (prefers-reduced-motion:reduce){*{animation:none!important}}`
 
 // The figure rules of src/styles.css, without transitions (a scene change is a cross-fade here).
 const FIGURE_CSS = `
@@ -390,88 +389,6 @@ function paradigmsFigure(theme, { scenes, seconds }) {
   })
 }
 
-/* ------------------------------------------------------------- results */
-
-function resultsFigure(theme) {
-  const data = readExperiments()
-  const at25 = (m) => m.depths[25] ?? m.depths['25']
-  const methods = data.methods.map((m) => ({ ...m, r: at25(m) }))
-  const color = { control: 'aux', 'non-parametric': 'harness', parametric: 'predictor', ours: 'deploy' }
-
-  // (a) task mean against mathematical reasoning after 25 tasks
-  const ax = { x: 70, y: 40, w: 470, h: 300 }
-  const X = (v) => ax.x + (v / 0.8) * ax.w
-  const Y = (v) => ax.y + ax.h - v * ax.h
-  let a = `<text class="t-head" x="0" y="0">Learn new tasks, keep general skills</text>`
-  a += `<text class="t-small" x="0" y="18">After 25 tasks · task mean vs. mathematical reasoning (G-test)</text>`
-  for (const v of [0, 0.25, 0.5, 0.75, 1]) {
-    a += `<line x1="${ax.x}" x2="${ax.x + ax.w}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/>`
-    a += `<text class="t-small" x="${ax.x - 10}" y="${Y(v) + 4}" text-anchor="end">${v}</text>`
-  }
-  for (const v of [0, 0.2, 0.4, 0.6, 0.8]) a += `<text class="t-small" x="${X(v)}" y="${ax.y + ax.h + 20}" text-anchor="middle">${v}</text>`
-  a += `<text class="t-small" x="${ax.x + ax.w / 2}" y="${ax.y + ax.h + 40}" text-anchor="middle">Task mean across 25 tasks →</text>`
-  a += `<text class="t-small" transform="translate(${ax.x - 46} ${ax.y + ax.h / 2}) rotate(-90)" text-anchor="middle">Mathematical reasoning →</text>`
-  const math = (m) => m.r.general.categories['mathematical-reasoning']
-  for (const m of methods.filter((m) => m.id !== 'hero')) {
-    a += `<circle cx="${round(X(m.r.seenMean))}" cy="${round(Y(math(m)))}" r="6" fill="var(--${color[m.family]})" fill-opacity=".85" stroke="var(--surface)" stroke-width="1.5"><title>${esc(m.short)}: ${m.r.seenMean.toFixed(3)}, ${math(m).toFixed(3)}</title></circle>`
-  }
-  const label = (x, y, text, anchor = 'start') => `<text class="t-small" x="${round(x)}" y="${round(y)}" text-anchor="${anchor}" style="fill:var(--ink-2)">${esc(text)}</text>`
-  const by = (id) => methods.find((m) => m.id === id)
-  const parametric = methods.filter((m) => m.family === 'parametric')
-  const px = Math.min(...parametric.map((m) => X(m.r.seenMean)))
-  const py = Math.max(...parametric.map((m) => Y(math(m))))
-  a += label(px - 12, py + 4, parametric.map((m) => m.short).join(' · '), 'end')
-  a += label(X(0.43), Y(0.865) + 26, methods.filter((m) => m.family !== 'parametric' && m.id !== 'hero').map((m) => m.short).join(' · '), 'middle')
-  const hero = by('hero')
-  const hx = round(X(hero.r.seenMean))
-  const hy = round(Y(math(hero)))
-  a += `<circle class="ring" cx="${hx}" cy="${hy}" r="13"/>`
-  a += `<circle cx="${hx}" cy="${hy}" r="8" fill="var(--deploy)" stroke="var(--surface)" stroke-width="2"><title>HERD: ${hero.r.seenMean.toFixed(3)}, ${math(hero).toFixed(3)}</title></circle>`
-  a += `<text x="${hx + 16}" y="${hy + 5}" style="font-weight:650;fill:var(--deploy);font-size:14px">HERD</text>`
-
-  // (b) general capability on the 200-item probe through the stream
-  const bx = { x: 50, y: 40, w: 360, h: 300 }
-  const BX = (s) => bx.x + (s / 25) * bx.w
-  const BY = (v) => bx.y + bx.h - v * bx.h
-  let b = `<text class="t-head" x="0" y="0">General capability through the stream</text>`
-  b += `<text class="t-small" x="0" y="18">Category macro on the 200-item G probe · x: tasks learned</text>`
-  for (const v of [0, 0.25, 0.5, 0.75, 1]) {
-    b += `<line x1="${bx.x}" x2="${bx.x + bx.w}" y1="${BY(v)}" y2="${BY(v)}" stroke="var(--line)"/>`
-    b += `<text class="t-small" x="${bx.x - 10}" y="${BY(v) + 4}" text-anchor="end">${v}</text>`
-  }
-  for (const s of [0, 4, 8, 16, 25]) b += `<text class="t-small" x="${BX(s)}" y="${bx.y + bx.h + 20}" text-anchor="middle">${s}</text>`
-  const series = [['hero', 'deploy', 3], ['uniform-replay', 'predictor', 2], ['base', 'muted', 2, true]]
-  series.forEach(([id, c, w, dashed], i) => {
-    const m = by(id)
-    const pts = m.constant
-      ? [{ stage: 0, value: m.series.generalProbe[0].value }, { stage: 25, value: m.series.generalProbe[0].value }]
-      : m.series.generalProbe
-    const d = pts.map((p) => `${round(BX(p.stage))},${round(BY(p.value))}`).join(' ')
-    b += `<polyline points="${d}" fill="none" stroke="var(--${c})" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" ${dashed ? 'stroke-dasharray="5 5"' : `pathLength="1" class="draw d${i}"`}/>`
-    const last = pts.at(-1)
-    b += `<text x="${round(BX(25) + 8)}" y="${round(BY(last.value) + (id === 'uniform-replay' ? 12 : id === 'hero' ? -4 : 4))}" style="font-size:12.5px;font-weight:600;fill:var(--${c})">${esc(m.short)}</text>`
-  })
-
-  const W = 1180
-  const H = 540
-  const legend = [['This work', 'deploy'], ['Weights', 'predictor'], ['Context', 'harness'], ['Control', 'aux']]
-  const css = `.draw{stroke-dasharray:1 1;animation:draw 7s cubic-bezier(.4,0,.2,1) infinite}.d1{animation-delay:.25s}
-@keyframes draw{0%{stroke-dashoffset:1;opacity:1}55%{stroke-dashoffset:0;opacity:1}92%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}`
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Results on TRACE+17 after 25 tasks. Left: HERD reaches a task mean of ${hero.r.seenMean.toFixed(3)} while keeping mathematical reasoning at ${math(hero).toFixed(3)}; weight-based learners reach ${Math.min(...parametric.map((m) => m.r.seenMean)).toFixed(2)}–${Math.max(...parametric.map((m) => m.r.seenMean)).toFixed(2)} with mathematical reasoning at ${Math.min(...parametric.map(math)).toFixed(2)}–${Math.max(...parametric.map(math)).toFixed(2)}. Right: HERD's general capability rises from ${hero.series.generalProbe[0].value} to ${hero.series.generalProbe.at(-1).value} through the stream.">
-<title>Results · TRACE+17 after 25 tasks</title>
-<style>${vars(theme)}${FIGURE_CSS}${css}</style>
-<rect x="0.5" y="0.5" width="${W - 1}" height="${H - 1}" rx="18" fill="var(--surface)" stroke="var(--line)"/>
-<text class="fig-label" x="20" y="30">RESULTS</text>
-<text class="fig-title" x="110" y="31.5">TRACE+17 · Qwen3.5-4B · 25 tasks · HERD: mean of seeds 42, 43, 44</text>
-<line x1="0" x2="${W}" y1="52" y2="52" stroke="var(--line)"/>
-<g transform="translate(28 92)">${a}</g>
-<g transform="translate(630 92)">${b}</g>
-<line x1="0" x2="${W}" y1="${H - 44}" y2="${H - 44}" stroke="var(--line)"/>
-${legendRow(legend, 20, H - 18)}
-</svg>
-`
-}
-
 /* --------------------------------------------------------------- banner */
 
 function bannerFigure(theme) {
@@ -524,7 +441,7 @@ ${pills(0, 34)}
 </g>
 <g transform="translate(690 0)">
 ${lede.map((line, i) => `<text class="lede" x="0" y="${118 + i * 29}">${line}</text>`).join('')}
-<text class="by" x="0" y="${118 + 3 * 29 + 12}">Paper under review · ACL Rolling Review, October 2026</text>
+<text class="by" x="0" y="${118 + 3 * 29 + 12}">Learn in the harness. Internalize in the weights.</text>
 </g>
 ${stages}
 <text class="t-mono" x="690" y="314" style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.6px;fill:var(--muted)">BOTH STATES CARRIED FORWARD · ONLY THE PREDICTOR IS DEPLOYED</text>
@@ -554,19 +471,18 @@ try {
     'hero-stream': (theme) => singleSvgFigure(theme, stream, {
       legend: LEGEND_STREAM,
       poster: 10,
-      desc: 'At each stage the harness is updated, the predictor is trained by Drift-Constrained OPD, and the predictor alone is deployed. Both states are passed to the next stage.',
+      desc: 'At each stage the harness is updated, the predictor is trained by drift-constrained distillation, and the predictor alone is deployed. Both states are passed to the next stage.',
     }),
     paradigms: (theme) => paradigmsFigure(theme, paradigms),
     'stage-anatomy': (theme) => singleSvgFigure(theme, stage, {
       poster: 3,
-      desc: 'Bounded current evidence updates the harness checkpoint; Drift-Constrained OPD trains the predictor under history and general-capability anchors; only the predictor is deployed.',
+      desc: 'Bounded current evidence updates the harness checkpoint; drift-constrained distillation trains the predictor under history and general-capability anchors; only the predictor is deployed.',
     }),
     'lora-merge': (theme) => singleSvgFigure(theme, lora, {
       poster: 2,
       label: 'Figure 4',
       desc: 'A rank-limited LoRA update is trained, merged into the inherited weights, and the merged predictor is passed to the next stage and deployed.',
     }),
-    results: resultsFigure,
   }
 
   mkdirSync(outDir, { recursive: true })

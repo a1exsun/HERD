@@ -26,7 +26,9 @@
     "test:watch": "vitest",
     "dsh:config": "node scripts/dsh-test-profile.mjs config",
     "dsh:smoke": "pnpm build && node scripts/dsh-smoke.mjs",
-    "dsh:web": "pnpm build && node scripts/dsh-host-web.mjs"
+    "dsh:web": "pnpm build && node scripts/dsh-host-web.mjs",
+    "site:dev": "pnpm --filter @hero/official-website dev",
+    "site:check": "pnpm --filter @hero/official-website lint && pnpm --filter @hero/official-website test && pnpm --filter @hero/official-website build"
   },
   "devDependencies": {
     "@deepseek-ai/dsh": "0.1.2-rc.1",

@@ -1,0 +1,1357 @@
+{
+  "source": "herd-paper, final version: Tables 1-4, Figures 3 and 4; task metadata from datasets/trace-plus-17/manifest.json",
+  "columns": [
+    "AA",
+    "Acquisition",
+    "Forgetting",
+    "BWT",
+    "G-test",
+    "ΔC",
+    "Worst ΔC"
+  ],
+  "rows": [
+    {
+      "id": "hero",
+      "name": "HERD",
+      "family": "This work",
+      "values": [
+        0.706,
+        0.713,
+        0.01,
+        -0.007,
+        0.774,
+        -0.063,
+        -0.13
+      ]
+    },
+    {
+      "id": "base",
+      "name": "Base",
+      "family": "Control",
+      "values": [
+        0.419,
+        0.419,
+        0,
+        0,
+        0.837,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "static-harness",
+      "name": "Static harness",
+      "family": "Control",
+      "values": [
+        0.432,
+        0.432,
+        0,
+        0,
+        0.791,
+        -0.046,
+        -0.135
+      ]
+    },
+    {
+      "id": "hcl-stable",
+      "name": "HCL-Stable",
+      "family": "Context",
+      "values": [
+        0.433,
+        0.435,
+        0.003,
+        -0.002,
+        0.823,
+        -0.014,
+        -0.085
+      ]
+    },
+    {
+      "id": "ace",
+      "name": "ACE",
+      "family": "Context",
+      "values": [
+        0.427,
+        0.428,
+        0.001,
+        -0.001,
+        0.748,
+        -0.089,
+        -0.32
+      ]
+    },
+    {
+      "id": "seq-lora",
+      "name": "Seq-LoRA",
+      "family": "Weights",
+      "values": [
+        0.694,
+        0.715,
+        0.025,
+        -0.022,
+        0.597,
+        -0.24,
+        -0.665
+      ]
+    },
+    {
+      "id": "uniform-replay",
+      "name": "Uniform replay",
+      "family": "Weights",
+      "values": [
+        0.699,
+        0.711,
+        0.02,
+        -0.013,
+        0.599,
+        -0.238,
+        -0.675
+      ]
+    },
+    {
+      "id": "opr",
+      "name": "OPR",
+      "family": "Weights",
+      "values": [
+        0.69,
+        0.705,
+        0.024,
+        -0.016,
+        0.614,
+        -0.223,
+        -0.625
+      ]
+    },
+    {
+      "id": "treelora",
+      "name": "TreeLoRA",
+      "family": "Weights",
+      "values": [
+        0.686,
+        0.711,
+        0.032,
+        -0.026,
+        0.605,
+        -0.232,
+        -0.635
+      ]
+    },
+    {
+      "id": "moram",
+      "name": "MoRAM",
+      "family": "Weights",
+      "values": [
+        0.693,
+        0.701,
+        0.019,
+        -0.009,
+        0.637,
+        -0.2,
+        -0.65
+      ]
+    },
+    {
+      "id": "sdft",
+      "name": "SDFT",
+      "family": "Weights",
+      "values": [
+        0.021,
+        0.024,
+        0.003,
+        -0.003,
+        0.172,
+        -0.665,
+        -0.77
+      ]
+    },
+    {
+      "id": "ophsd",
+      "name": "OPHSD",
+      "family": "Hybrid",
+      "values": [
+        0.62,
+        0.639,
+        0.021,
+        -0.02,
+        0.582,
+        -0.255,
+        -0.645
+      ]
+    }
+  ],
+  "herdSd": {
+    "columns": [
+      1,
+      0,
+      2,
+      5,
+      6
+    ],
+    "values": [
+      0.002,
+      0.008,
+      0.003,
+      0.006,
+      0.012
+    ]
+  },
+  "comparisons": {
+    "columns": [
+      "ΔAA",
+      "ΔAcquisition",
+      "ΔForgetting",
+      "ΔBWT",
+      "ΔG-test"
+    ],
+    "rows": [
+      {
+        "name": "Base",
+        "cells": [
+          {
+            "difference": 0.287,
+            "interval": [
+              0.274,
+              0.299
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.293,
+            "interval": [
+              0.281,
+              0.306
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.01,
+            "interval": [
+              0.006,
+              0.016
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": -0.007,
+            "interval": [
+              -0.013,
+              -0.001
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": -0.063,
+            "interval": [
+              -0.088,
+              -0.038
+            ],
+            "excludesZero": true
+          }
+        ]
+      },
+      {
+        "name": "Static harness",
+        "cells": [
+          {
+            "difference": 0.274,
+            "interval": [
+              0.262,
+              0.286
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.281,
+            "interval": [
+              0.268,
+              0.293
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.01,
+            "interval": [
+              0.006,
+              0.016
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": -0.007,
+            "interval": [
+              -0.013,
+              -0.002
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": -0.017,
+            "interval": [
+              -0.044,
+              0.01
+            ],
+            "excludesZero": false
+          }
+        ]
+      },
+      {
+        "name": "HCL-Stable",
+        "cells": [
+          {
+            "difference": 0.273,
+            "interval": [
+              0.26,
+              0.286
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.278,
+            "interval": [
+              0.265,
+              0.291
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.007,
+            "interval": [
+              0.003,
+              0.013
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": -0.005,
+            "interval": [
+              -0.012,
+              0.001
+            ],
+            "excludesZero": false
+          },
+          {
+            "difference": -0.049,
+            "interval": [
+              -0.074,
+              -0.024
+            ],
+            "excludesZero": true
+          }
+        ]
+      },
+      {
+        "name": "Seq-LoRA",
+        "cells": [
+          {
+            "difference": 0.012,
+            "interval": [
+              0.004,
+              0.021
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": -0.002,
+            "interval": [
+              -0.01,
+              0.007
+            ],
+            "excludesZero": false
+          },
+          {
+            "difference": -0.015,
+            "interval": [
+              -0.024,
+              -0.009
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.015,
+            "interval": [
+              0.006,
+              0.023
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.177,
+            "interval": [
+              0.154,
+              0.2
+            ],
+            "excludesZero": true
+          }
+        ]
+      },
+      {
+        "name": "Uniform replay",
+        "cells": [
+          {
+            "difference": 0.007,
+            "interval": [
+              -0.001,
+              0.016
+            ],
+            "excludesZero": false
+          },
+          {
+            "difference": 0.001,
+            "interval": [
+              -0.007,
+              0.01
+            ],
+            "excludesZero": false
+          },
+          {
+            "difference": -0.01,
+            "interval": [
+              -0.02,
+              -0.004
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.006,
+            "interval": [
+              -0.004,
+              0.017
+            ],
+            "excludesZero": false
+          },
+          {
+            "difference": 0.175,
+            "interval": [
+              0.15,
+              0.201
+            ],
+            "excludesZero": true
+          }
+        ]
+      },
+      {
+        "name": "OPR",
+        "cells": [
+          {
+            "difference": 0.016,
+            "interval": [
+              0.007,
+              0.025
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.008,
+            "interval": [
+              0.0,
+              0.015
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": -0.014,
+            "interval": [
+              -0.023,
+              -0.007
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.009,
+            "interval": [
+              -0.001,
+              0.018
+            ],
+            "excludesZero": false
+          },
+          {
+            "difference": 0.16,
+            "interval": [
+              0.136,
+              0.184
+            ],
+            "excludesZero": true
+          }
+        ]
+      },
+      {
+        "name": "TreeLoRA",
+        "cells": [
+          {
+            "difference": 0.02,
+            "interval": [
+              0.011,
+              0.029
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.002,
+            "interval": [
+              -0.006,
+              0.009
+            ],
+            "excludesZero": false
+          },
+          {
+            "difference": -0.021,
+            "interval": [
+              -0.03,
+              -0.015
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.019,
+            "interval": [
+              0.01,
+              0.029
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.169,
+            "interval": [
+              0.144,
+              0.194
+            ],
+            "excludesZero": true
+          }
+        ]
+      },
+      {
+        "name": "OPHSD",
+        "cells": [
+          {
+            "difference": 0.087,
+            "interval": [
+              0.073,
+              0.1
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.074,
+            "interval": [
+              0.061,
+              0.087
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": -0.01,
+            "interval": [
+              -0.017,
+              -0.005
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.014,
+            "interval": [
+              0.007,
+              0.02
+            ],
+            "excludesZero": true
+          },
+          {
+            "difference": 0.192,
+            "interval": [
+              0.166,
+              0.218
+            ],
+            "excludesZero": true
+          }
+        ]
+      }
+    ]
+  },
+  "ablations": {
+    "columns": [
+      "Acquisition",
+      "AA",
+      "Forgetting",
+      "ΔC",
+      "Worst ΔC"
+    ],
+    "drifts": [
+      "Dᶜ",
+      "D⁰"
+    ],
+    "noise": [
+      0.006,
+      0.024,
+      0.009,
+      0.018,
+      0.036
+    ],
+    "figure4": [
+      "− skills",
+      "uniform memory",
+      "− checkpoint anchor",
+      "− base anchor",
+      "− both anchors",
+      "+ harness (infer.)"
+    ],
+    "rows": [
+      {
+        "name": "HERD (full)",
+        "inferenceOnly": false,
+        "singleSeed": false,
+        "values": [
+          0.713,
+          0.706,
+          0.01,
+          -0.063,
+          -0.13
+        ],
+        "changes": null,
+        "drifts": [
+          0.021,
+          0.041
+        ]
+      },
+      {
+        "name": "− skills",
+        "inferenceOnly": false,
+        "singleSeed": true,
+        "values": [
+          0.668,
+          0.656,
+          0.013,
+          -0.073,
+          -0.135
+        ],
+        "changes": [
+          -4.5,
+          -5.0,
+          0.3,
+          -1.0,
+          -0.5
+        ],
+        "drifts": [
+          0.021,
+          0.04
+        ]
+      },
+      {
+        "name": "uniform memory",
+        "inferenceOnly": false,
+        "singleSeed": true,
+        "values": [
+          0.708,
+          0.69,
+          0.02,
+          -0.071,
+          -0.125
+        ],
+        "changes": [
+          -0.5,
+          -1.7,
+          1.0,
+          -0.8,
+          0.5
+        ],
+        "drifts": [
+          0.034,
+          0.041
+        ]
+      },
+      {
+        "name": "− checkpoint anchor",
+        "inferenceOnly": false,
+        "singleSeed": true,
+        "values": [
+          0.716,
+          0.688,
+          0.03,
+          -0.075,
+          -0.14
+        ],
+        "changes": [
+          0.4,
+          -1.8,
+          2.0,
+          -1.2,
+          -1.0
+        ],
+        "drifts": [
+          0.118,
+          0.044
+        ]
+      },
+      {
+        "name": "− base anchor",
+        "inferenceOnly": false,
+        "singleSeed": true,
+        "values": [
+          0.718,
+          0.704,
+          0.016,
+          -0.158,
+          -0.49
+        ],
+        "changes": [
+          0.6,
+          -0.2,
+          0.6,
+          -9.5,
+          -36.0
+        ],
+        "drifts": [
+          0.027,
+          0.212
+        ]
+      },
+      {
+        "name": "− both anchors",
+        "inferenceOnly": false,
+        "singleSeed": true,
+        "values": [
+          0.721,
+          0.68,
+          0.044,
+          -0.193,
+          -0.56
+        ],
+        "changes": [
+          0.8,
+          -2.6,
+          3.3,
+          -13.0,
+          -43.0
+        ],
+        "drifts": [
+          0.131,
+          0.236
+        ]
+      },
+      {
+        "name": "SFT objective",
+        "inferenceOnly": false,
+        "singleSeed": true,
+        "values": [
+          0.722,
+          0.706,
+          0.018,
+          -0.123,
+          -0.32
+        ],
+        "changes": [
+          0.9,
+          -0.1,
+          0.8,
+          -6.0,
+          -19.0
+        ],
+        "drifts": [
+          0.047,
+          0.048
+        ]
+      },
+      {
+        "name": "εC = 0.02",
+        "inferenceOnly": false,
+        "singleSeed": true,
+        "values": [
+          0.695,
+          0.691,
+          0.005,
+          -0.051,
+          -0.085
+        ],
+        "changes": [
+          -1.8,
+          -1.5,
+          -0.5,
+          1.2,
+          4.5
+        ],
+        "drifts": [
+          0.019,
+          0.038
+        ]
+      },
+      {
+        "name": "εC = 0.1",
+        "inferenceOnly": false,
+        "singleSeed": true,
+        "values": [
+          0.717,
+          0.699,
+          0.021,
+          -0.083,
+          -0.16
+        ],
+        "changes": [
+          0.4,
+          -0.8,
+          1.1,
+          -2.0,
+          -3.0
+        ],
+        "drifts": [
+          0.071,
+          0.046
+        ]
+      },
+      {
+        "name": "+ harness (infer.)",
+        "inferenceOnly": true,
+        "singleSeed": false,
+        "values": [
+          0.713,
+          0.708,
+          0.007,
+          -0.061,
+          -0.128
+        ],
+        "changes": [
+          0.0,
+          0.2,
+          -0.3,
+          0.2,
+          0.2
+        ],
+        "drifts": [
+          0.021,
+          0.041
+        ]
+      }
+    ]
+  },
+  "cost": {
+    "columns": [
+      "Stage 1 (s)",
+      "Stage 25 (s)",
+      "Total (s)",
+      "Context tokens"
+    ],
+    "rows": [
+      {
+        "name": "HERD",
+        "values": [
+          316,
+          284,
+          10723,
+          0
+        ]
+      },
+      {
+        "name": "HCL-Stable",
+        "values": [
+          580,
+          296,
+          46887,
+          39
+        ]
+      },
+      {
+        "name": "ACE",
+        "values": [
+          60412,
+          36759,
+          888082,
+          15410
+        ]
+      },
+      {
+        "name": "Seq-LoRA",
+        "values": [
+          51,
+          200,
+          10463,
+          0
+        ]
+      },
+      {
+        "name": "Uniform replay",
+        "values": [
+          318,
+          400,
+          15267,
+          0
+        ]
+      },
+      {
+        "name": "OPR",
+        "values": [
+          667,
+          705,
+          18670,
+          0
+        ]
+      },
+      {
+        "name": "TreeLoRA",
+        "values": [
+          157,
+          256,
+          12733,
+          0
+        ]
+      },
+      {
+        "name": "MoRAM",
+        "values": [
+          171,
+          433,
+          14017,
+          0
+        ]
+      },
+      {
+        "name": "SDFT",
+        "values": [
+          1999,
+          3626,
+          122508,
+          0
+        ]
+      },
+      {
+        "name": "OPHSD",
+        "values": [
+          11364,
+          30495,
+          659000,
+          0
+        ]
+      }
+    ]
+  },
+  "longHorizon": {
+    "source": "Figure 3 (main text), from experiments/outputs at thesis main@81a110e",
+    "firstEight": {
+      "stages": [
+        8,
+        12,
+        16,
+        20,
+        25
+      ],
+      "base": 0.167,
+      "methods": {
+        "hero": [
+          0.664,
+          0.663,
+          0.66,
+          0.66,
+          0.665
+        ],
+        "ace": [
+          0.206,
+          0.206,
+          0.206,
+          0.206,
+          0.206
+        ],
+        "hcl-stable": [
+          0.212,
+          0.212,
+          0.212,
+          0.212,
+          0.212
+        ],
+        "seq-lora": [
+          0.668,
+          0.372,
+          0.628,
+          0.65,
+          0.637
+        ],
+        "uniform-replay": [
+          0.662,
+          0.658,
+          0.659,
+          0.649,
+          0.658
+        ],
+        "opr": [
+          0.645,
+          0.644,
+          0.636,
+          0.614,
+          0.621
+        ],
+        "treelora": [
+          0.664,
+          0.593,
+          0.653,
+          0.626,
+          0.623
+        ],
+        "moram": [
+          0.652,
+          0.64,
+          0.63,
+          0.643,
+          0.625
+        ],
+        "sdft": [
+          0.059,
+          0.06,
+          0.06,
+          0.06,
+          0.06
+        ],
+        "ophsd": [
+          0.524,
+          0.514,
+          0.514,
+          0.511,
+          0.506
+        ]
+      }
+    },
+    "gtest": {
+      "stages": [
+        0,
+        4,
+        8,
+        16,
+        25
+      ],
+      "base": 0.837,
+      "methods": {
+        "hero": [
+          0.837,
+          0.822,
+          0.814,
+          0.796,
+          0.774
+        ],
+        "ace": [
+          0.837,
+          0.748,
+          0.748,
+          0.748,
+          0.748
+        ],
+        "hcl-stable": [
+          0.837,
+          0.825,
+          0.823,
+          0.829,
+          0.823
+        ],
+        "seq-lora": [
+          0.837,
+          0.578,
+          0.601,
+          0.541,
+          0.597
+        ],
+        "uniform-replay": [
+          0.837,
+          0.577,
+          0.603,
+          0.573,
+          0.599
+        ],
+        "opr": [
+          0.837,
+          0.541,
+          0.609,
+          0.565,
+          0.614
+        ],
+        "treelora": [
+          0.837,
+          0.59,
+          0.617,
+          0.566,
+          0.605
+        ],
+        "moram": [
+          0.837,
+          0.718,
+          0.638,
+          0.628,
+          0.637
+        ],
+        "sdft": [
+          0.837,
+          0.603,
+          0.247,
+          0.216,
+          0.172
+        ],
+        "ophsd": [
+          0.837,
+          0.741,
+          0.661,
+          0.613,
+          0.582
+        ]
+      }
+    },
+    "categories": [
+      {
+        "id": "general-knowledge",
+        "label": "General knowledge",
+        "source": "MMLU",
+        "base": 0.81
+      },
+      {
+        "id": "mathematical-reasoning",
+        "label": "Mathematical reasoning",
+        "source": "GSM8K",
+        "base": 0.89
+      },
+      {
+        "id": "commonsense-reasoning",
+        "label": "Commonsense reasoning",
+        "source": "HellaSwag",
+        "base": 0.81
+      },
+      {
+        "id": "instruction-following",
+        "label": "Instruction following",
+        "source": "IFEval",
+        "base": 0.82
+      },
+      {
+        "id": "multilingual-understanding",
+        "label": "Multilingual understanding",
+        "source": "XCOPA",
+        "base": 0.86
+      }
+    ],
+    "categoryChange": {
+      "hero": [
+        -4,
+        -6,
+        -4,
+        -13,
+        -4
+      ],
+      "seq-lora": [
+        -4,
+        -66,
+        -6,
+        -40,
+        -4
+      ],
+      "uniform-replay": [
+        -5,
+        -68,
+        -6,
+        -35,
+        -5
+      ],
+      "opr": [
+        -4,
+        -62,
+        -2,
+        -37,
+        -6
+      ],
+      "treelora": [
+        -4,
+        -64,
+        -3,
+        -40,
+        -5
+      ],
+      "moram": [
+        -6,
+        -65,
+        6,
+        -35,
+        0
+      ],
+      "sdft": [
+        -57,
+        -69,
+        -77,
+        -53,
+        -76
+      ],
+      "ophsd": [
+        -5,
+        -64,
+        -6,
+        -44,
+        -8
+      ]
+    }
+  },
+  "stream": [
+    {
+      "stage": 1,
+      "name": "C-STANCE",
+      "source": "TRACE",
+      "category": "Stance Classification",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 2,
+      "name": "FOMC",
+      "source": "TRACE",
+      "category": "Monetary Policy Classification",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 3,
+      "name": "MeetingBank",
+      "source": "TRACE",
+      "category": "Meeting Summarization",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 4,
+      "name": "Py150",
+      "source": "TRACE",
+      "category": "Code Completion",
+      "metric": "Edit similarity"
+    },
+    {
+      "stage": 5,
+      "name": "ScienceQA",
+      "source": "TRACE",
+      "category": "Science Question Answering",
+      "metric": "Leading-choice accuracy"
+    },
+    {
+      "stage": 6,
+      "name": "NumGLUE-cm",
+      "source": "TRACE",
+      "category": "Numerical Reasoning",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 7,
+      "name": "NumGLUE-ds",
+      "source": "TRACE",
+      "category": "Numerical Reasoning",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 8,
+      "name": "20Minuten",
+      "source": "TRACE",
+      "category": "Text Simplification",
+      "metric": "SARI"
+    },
+    {
+      "stage": 9,
+      "name": "SuperNI 024",
+      "source": "Cosmos QA",
+      "category": "Question Answering",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 10,
+      "name": "SuperNI 074",
+      "source": "SQuAD 1.1",
+      "category": "Question Generation",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 11,
+      "name": "SuperNI 195",
+      "source": "Sentiment140",
+      "category": "Sentiment Analysis",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 12,
+      "name": "SuperNI 511",
+      "source": "Reddit TIFU",
+      "category": "Summarization",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 13,
+      "name": "SuperNI 1219",
+      "source": "TED, English to Spanish",
+      "category": "Translation",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 14,
+      "name": "SuperNI 574",
+      "source": "AirDialogue",
+      "category": "Dialogue Generation",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 15,
+      "name": "SuperNI 192",
+      "source": "HotpotQA",
+      "category": "Explanation",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 16,
+      "name": "SuperNI 177",
+      "source": "ParaNMT",
+      "category": "Paraphrasing",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 17,
+      "name": "SuperNI 064",
+      "source": "list processing",
+      "category": "Program Execution",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 18,
+      "name": "SuperNI 346",
+      "source": "HybridQA",
+      "category": "POS Tagging",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 19,
+      "name": "SuperNI 108",
+      "source": "Contextual Abuse Dataset",
+      "category": "Toxic Language Detection",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 20,
+      "name": "SuperNI 111",
+      "source": "ASSET",
+      "category": "Text Simplification",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 21,
+      "name": "SuperNI 1415",
+      "source": "YouTube caption corrections",
+      "category": "Grammar Error Correction",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 22,
+      "name": "SuperNI 1447",
+      "source": "ADE Corpus V2",
+      "category": "Named Entity Recognition",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 23,
+      "name": "SuperNI 828",
+      "source": "COPA",
+      "category": "Cause Effect Classification",
+      "metric": "Exact match"
+    },
+    {
+      "stage": 24,
+      "name": "SuperNI 1728",
+      "source": "WebNLG",
+      "category": "Data to Text",
+      "metric": "ROUGE-L"
+    },
+    {
+      "stage": 25,
+      "name": "SuperNI 217",
+      "source": "ROCStories",
+      "category": "Sentence Ordering",
+      "metric": "Exact match"
+    }
+  ]
+}

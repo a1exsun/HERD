@@ -5,7 +5,7 @@
 **Harness-Evolving Recursive Distillation for Continual Learning**
 
 <p align="center">
-  <a href="https://herd.xsun.work/#top">
+  <a href="https://a1exsun.github.io/HERD/#top">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="public/readme/banner-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="public/readme/banner-light.svg">
@@ -16,9 +16,9 @@
 </p>
 
 <p>
-  <a href="https://herd.xsun.work/"><strong>Project website ↗</strong></a> &nbsp;·&nbsp;
+  <a href="https://a1exsun.github.io/HERD/"><strong>Project website ↗</strong></a> &nbsp;·&nbsp;
   <strong>Paper: arXiv link coming soon</strong> &nbsp;·&nbsp;
-  <a href="https://herd.xsun.work/#method"><strong>Interactive demos ↗</strong></a> &nbsp;·&nbsp;
+  <a href="https://a1exsun.github.io/HERD/#method"><strong>Interactive demos ↗</strong></a> &nbsp;·&nbsp;
   <a href="#getting-started"><strong>Get started ↓</strong></a>
 </p>
 <p><sub>Qwen3.5-4B &nbsp; / &nbsp; TRACE+17 &nbsp; / &nbsp; 25 sequential tasks</sub></p>
@@ -38,7 +38,7 @@ HERD is a hybrid continual learning framework for language models: it learns eff
 
 <table>
   <tr>
-    <td width="33%" valign="top"><h3>Explore the idea</h3><p>Watch skills and model weights evolve across a task stream.</p><a href="https://herd.xsun.work/#method">Open the interactive walkthrough →</a></td>
+    <td width="33%" valign="top"><h3>Explore the idea</h3><p>Watch skills and model weights evolve across a task stream.</p><a href="https://a1exsun.github.io/HERD/#method">Open the interactive walkthrough →</a></td>
     <td width="33%" valign="top"><h3>Run the code</h3><p>Set up the workspace, prepare data, and configure a continual-learning experiment.</p><a href="#getting-started">Start with the setup guide →</a></td>
     <td width="33%" valign="top"><h3>Build on HERD</h3><p>Inspect the harness, distillation runtime, shared scorers, and baseline implementations.</p><a href="#documentation">Find the relevant component →</a></td>
   </tr>
@@ -47,7 +47,7 @@ HERD is a hybrid continual learning framework for language models: it learns eff
 ## See HERD in action
 
 <p align="center">
-  <a href="https://herd.xsun.work/#top">
+  <a href="https://a1exsun.github.io/HERD/#top">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="public/readme/hero-stream-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="public/readme/hero-stream-light.svg">
@@ -74,7 +74,7 @@ HERD is a hybrid continual learning framework for language models: it learns eff
 </table>
 
 <p align="center">
-  <a href="https://herd.xsun.work/#overview">
+  <a href="https://a1exsun.github.io/HERD/#overview">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="public/readme/stage-anatomy-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="public/readme/stage-anatomy-light.svg">
@@ -89,7 +89,7 @@ HERD is a hybrid continual learning framework for language models: it learns eff
 <summary><strong>Compare learning paradigms</strong> — what changes, what is carried, what is deployed</summary>
 
 <p align="center">
-  <a href="https://herd.xsun.work/#overview">
+  <a href="https://a1exsun.github.io/HERD/#overview">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="public/readme/paradigms-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="public/readme/paradigms-light.svg">
@@ -106,7 +106,7 @@ HERD is a hybrid continual learning framework for language models: it learns eff
 <summary><strong>Watch the LoRA merge</strong> — from a fresh adapter to the next checkpoint</summary>
 
 <p align="center">
-  <a href="https://herd.xsun.work/#drift-constrained-distillation">
+  <a href="https://a1exsun.github.io/HERD/#drift-constrained-distillation">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="public/readme/lora-merge-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="public/readme/lora-merge-light.svg">
@@ -132,7 +132,7 @@ See the paper (arXiv link coming soon) and the [stream runner guide](packages/he
 
 ## Getting started
 
-You can browse the [live demos](https://herd.xsun.work/#method) without installing anything. For local use, choose the website preview or experiment setup below. Existing package names, environment variables, and CLI paths use `hero`.
+You can browse the [live demos](https://a1exsun.github.io/HERD/#method) without installing anything. For local use, choose the website preview or experiment setup below. Existing package names, environment variables, and CLI paths use `hero`.
 
 ### Preview the website locally
 
@@ -293,7 +293,7 @@ Optional checks: `pnpm model:smoke` and `pnpm dsh:smoke`. They require the model
 HERD has the highest mean AA in this comparison, though the paired 95% interval for its AA difference from uniform replay includes zero. Acquisition is statistically indistinguishable from Seq-LoRA. General-capability loss is the smallest among weight-updating methods: **ΔC = −0.063**, with a worst-category change of **−0.130**.
 
 <p align="center">
-  <a href="https://herd.xsun.work/#experiments">
+  <a href="https://a1exsun.github.io/HERD/#experiments">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="public/readme/results-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="public/readme/results-light.svg">
@@ -303,7 +303,7 @@ HERD has the highest mean AA in this comparison, though the paired 95% interval 
   <br><sub>Drawn from the website's chart component and the paper's reported values. Click to explore the interactive version.</sub>
 </p>
 
-<p><a href="https://herd.xsun.work/#experiments"><strong>Explore the results on the website →</strong></a></p>
+<p><a href="https://a1exsun.github.io/HERD/#experiments"><strong>Explore the results on the website →</strong></a></p>
 
 <details>
 <summary><strong>Full comparison · TRACE+17 after stage 25</strong></summary>
@@ -418,7 +418,7 @@ If HERD informs your work, please cite the paper:
   author = {Sun, Xun and Nguyen, Thanh Thi and Vu, Thuy-Trang},
   year   = {2026},
   note   = {Preprint},
-  url    = {https://herd.xsun.work}
+  url    = {https://a1exsun.github.io/HERD/}
 }
 ```
 
@@ -426,4 +426,4 @@ If HERD informs your work, please cite the paper:
 
 This repository does not currently declare a project-wide license. Third-party code and datasets retain their original terms; consult the [baseline provenance](packages/baselines/README.md), [dataset guide](datasets/trace-plus-17/README.md), component license files, and `UPSTREAM.json` records before reuse.
 
-<p align="center"><a href="https://herd.xsun.work/"><strong>Explore HERD on the project website ↗</strong></a></p>
+<p align="center"><a href="https://a1exsun.github.io/HERD/"><strong>Explore HERD on the project website ↗</strong></a></p>

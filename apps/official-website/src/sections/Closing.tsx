@@ -5,7 +5,7 @@ const BIBTEX = `@misc{sun2026herd,
   author = {Sun, Xun and Nguyen, Thanh Thi and Vu, Thuy-Trang},
   year   = {2026},
   note   = {Preprint},
-  url    = {https://herd.xsun.work}
+  url    = {https://a1exsun.github.io/HERD/}
 }`
 
 export function Cite() {

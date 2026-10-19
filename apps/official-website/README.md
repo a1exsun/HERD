@@ -1,6 +1,6 @@
 # HERD project page
 
-Single-page site that introduces HERD with interactive figures, published at <https://herd.xsun.work>.
+Single-page site that introduces HERD with interactive figures, published at <https://a1exsun.github.io/HERD/>.
 Built with Vite, React and TypeScript. Fonts and KaTeX are bundled, so the built page has no external dependencies.
 
 Run these commands from the repository root (dependencies use the root pnpm workspace lockfile).
@@ -9,8 +9,10 @@ Run these commands from the repository root (dependencies use the root pnpm work
 pnpm install
 pnpm site:dev                                  # local preview
 pnpm site:check                                # lint, test, type-check and build into dist/
-pnpm --filter @hero/official-website deploy    # build, then publish to the Cloudflare Worker named in wrangler.jsonc
 ```
+
+Pushing changes under `apps/official-website/` to `main` deploys the site to GitHub Pages
+(`.github/workflows/pages.yml`).
 
 `pnpm --filter @hero/official-website readme:figures` renders the site's figures to animated, theme-aware SVG in
 `herd-code/public/readme/` for the repository README; rerun it after changing a figure and commit the output.

@@ -51,7 +51,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="wrap">
-        <span>Xun Sun, Thanh Thi Nguyen, Thuy-Trang Vu · Monash University · HERD: Harness-Evolving Recursive Distillation for Continual Learning</span>
+        <span>Xun Sun, Thanh Thi Nguyen, Thuy-Trang Vu · Monash University, University of the Sunshine Coast · HERD: Harness-Evolving Recursive Distillation for Continual Learning</span>
         <span>Figures marked “Schematic” use illustrative values and do not report experimental results.</span>
       </div>
     </footer>

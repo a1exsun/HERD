@@ -461,6 +461,21 @@ input {
   color: var(--ink);
 }
 
+.affiliations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.byline sup {
+  font: 500 0.62em/1 var(--font-mono);
+  color: var(--muted);
+  margin: 0 2px;
+}
+
 .byline a {
   text-decoration: none;
 }

@@ -4,9 +4,14 @@ import { vars } from '../lib/css.ts'
 import { useReducedMotion } from '../lib/hooks.ts'
 
 const AUTHORS = [
-  { name: 'Xun Sun', url: 'https://xsun.work' },
-  { name: 'Thanh Thi Nguyen', url: 'https://sites.google.com/view/thanh-thi-nguyen' },
-  { name: 'Thuy-Trang Vu', url: 'https://trangvu.github.io/' },
+  { name: 'Xun Sun', url: 'https://xsun.work', aff: 1 },
+  { name: 'Thanh Thi Nguyen', url: 'https://sites.google.com/view/thanh-thi-nguyen', aff: 2 },
+  { name: 'Thuy-Trang Vu', url: 'https://trangvu.github.io/', aff: 1 },
+]
+
+const AFFILIATIONS = [
+  { name: 'Monash University', url: 'https://www.monash.edu/' },
+  { name: 'University of the Sunshine Coast', url: 'https://www.unisc.edu.au/' },
 ]
 
 const LETTERS = [
@@ -73,10 +78,14 @@ export function Hero() {
             <div className="byline">
               <ul className="authors" aria-label="Authors">
                 {AUTHORS.map((a) => (
-                  <li key={a.name}><a href={a.url} target="_blank" rel="noreferrer">{a.name}</a></li>
+                  <li key={a.name}><a href={a.url} target="_blank" rel="noreferrer">{a.name}</a><sup>{a.aff}</sup></li>
                 ))}
               </ul>
-              <a href="https://www.monash.edu/" target="_blank" rel="noreferrer">Monash University</a>
+              <ul className="affiliations" aria-label="Affiliations">
+                {AFFILIATIONS.map((f, i) => (
+                  <li key={f.name}><sup>{i + 1}</sup><a href={f.url} target="_blank" rel="noreferrer">{f.name}</a></li>
+                ))}
+              </ul>
             </div>
             <div className="actions">
               <a className="btn btn-primary" href="#method">

@@ -40,13 +40,3 @@ not bundle the PDF; the Paper button points to arXiv once the preprint is posted
   charts and heatmap, ablation heatmap); the paper's raster figures are not used.
 
 When the paper changes, update the section text and `data/paper-results.json` together.
-
-### Known differences between the paper and the research code
-
-The page describes the paper. The stream runner in `packages/hero-drift-constrained-opd/stream/run.py` differs in
-two places, and is unchanged here:
-
-| Area | Paper | Runner |
-| --- | --- | --- |
-| Skill guard | Strictly lower mean residual, no answer replay | Replay-conditioned teacher NLL may rise by `--harm-tolerance` |
-| Residual refresh | Scored under the merged weights after distillation | Residuals selected before training under the previous checkpoint |

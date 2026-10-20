@@ -1,17 +1,19 @@
-"""HERO stage algorithm: bounded harness state and drift-constrained distillation of a privileged teacher.
+"""HERD stage algorithm: harness evolution and drift-constrained distillation of a privileged teacher.
 
-Stage t receives the deployed predictor theta_{t-1} (merged weights) and the harness state H_{t-1} = (K, R):
+Stage t receives the deployed predictor theta_{t-1} (merged weights) and the harness H_{t-1} = (K, R):
 
-1. Evolve K. The frozen base model theta_0, shown examples from bounded evidence A_t, writes the current task's skill
-   (one greedy call). It is committed unless it raises the frozen teacher's NLL of the verified targets on A_t by
-   more than a tolerance: the teacher is the skill's only consumer in training.
-2. Retain residuals. R_t^task = TopBudget(R_{t-1}^task u A_t) by target NLL under theta_{t-1} executing K_t.
-3. Drift-constrained distillation. The frozen theta_{t-1}, given the routed skill and the record's verified target
-   as privileged context, is the teacher; the student (theta_{t-1} + a fresh LoRA) sees the bare prompt and
-   minimizes the full-vocabulary KL(teacher || student) at every position of the verified target. Checkpoint drift (theta_{t-1} on historical
-   residual probes) and base drift (theta_0 on the reserved general set G) are each held under a budget by a
-   Lagrange multiplier updated by dual ascent. Anchor states on the fixed probe sequences are computed once.
-4. Merge the LoRA into the weights: theta_t.
+1. Evolve K. The frozen base model theta_0, shown a bounded window A_t of the task and the checkpoint's mistakes on
+   it, writes the task's skill (one greedy call). The candidate registry is committed only if it lowers the mean
+   residual of A_t under the frozen theta_{t-1} (verified-answer NLL with the routed skill and bare prompt in
+   context, no replayed answer) and fits B_K.
+2. Drift-constrained distillation. The frozen theta_{t-1}, given the routed skill and the record's verified answer
+   replayed as its own previous turn, is the teacher; the student (theta_{t-1} + a fresh LoRA) sees the bare prompt
+   and minimizes the full-vocabulary KL(teacher || student) at every position of the verified answer. Checkpoint
+   drift (theta_{t-1} on probes from R_{t-1}) and base drift (theta_0 on the reserved general set G) are each the
+   worst group's mean KL, held under a budget by a Lagrange multiplier updated by bounded dual ascent. Anchor states
+   on the fixed probe sequences are computed once.
+3. Merge the LoRA into the weights: theta_t.
+4. Refresh R. R_t = TopBudget(R_{t-1} u A_t) by residual under theta_t executing K_t.
 
 Only `torch`, `transformers` and `peft` are required. Sequences are lists of token ids.
 """
@@ -20,7 +22,6 @@ from __future__ import annotations
 from contextlib import nullcontext
 from dataclasses import dataclass
 import json
-import hashlib
 import random
 import re
 import time
@@ -185,12 +186,6 @@ def top_budget(records: Sequence[dict[str, Any]], residuals: dict[str, float], b
     return kept
 
 
-def uniform_budget(records: Sequence[dict[str, Any]], budget: int, seed: int) -> list[dict[str, Any]]:
-    """Uniform hash priorities over the retained/new pool, under the same token cap."""
-    priorities = {r['id']: -int(hashlib.sha256(f"{seed}:{r['id']}".encode()).hexdigest(), 16) for r in records}
-    return top_budget(records, priorities, budget)
-
-
 # ---------------------------------------------------------------------------
 # Model access
 
@@ -285,7 +280,7 @@ def _token_ce(student: torch.Tensor, labels: torch.Tensor, head: torch.Tensor) -
 
 @dataclass
 class Pair:
-    """Student input, sampled completion and the anchor/teacher view of the same completion."""
+    """Student input, completion and the anchor/teacher view of the same completion."""
     student: list[int]
     completion: list[int]
     teacher: list[int] | None = None  # teacher prompt; its hidden states are computed with the adapter disabled
@@ -365,7 +360,8 @@ def anchor_targets(model, probes: Sequence[Pair], budget: int = 32768) -> None:
 @torch.no_grad()
 def target_nll(model, rows: Sequence[tuple[list[int], list[int]]], head32: torch.Tensor,
                budget: int = 32768) -> list[float]:
-    """Mean target NLL per row under the frozen checkpoint."""
+    """Mean target NLL per (prompt, target) row under the frozen model: the residual when the prompt holds
+    only the routed skill and the bare input."""
     values: list[float] = [0.0] * len(rows)
     with frozen(model):
         for group in _token_batches([len(p) + len(c) for p, c in rows], budget, 64):
@@ -388,11 +384,11 @@ class StageConfig:
     batch_size: int = 32
     learning_rate: float = 1e-4
     gradient_clip: float = 1.0
-    checkpoint_budget: float | None = 0.05  # None disables enforcement, not drift measurement
+    checkpoint_budget: float | None = 0.05  # None: drift measured and audited, never constrained (ablation)
     general_budget: float | None = 0.05
     dual_rate: float = 0.5
+    objective: str = "distill"  # "sft": cross-entropy on the verified answer (ablation)
     seed: int = 42
-    objective: str = "distill"
 
 
 def batch_schedule(size: int, *, updates: int, batch_size: int, seed: int) -> list[list[int]]:
@@ -414,17 +410,15 @@ def batch_schedule(size: int, *, updates: int, batch_size: int, seed: int) -> li
 def train_stage(model, records: Sequence[dict[str, Any]], *, divergence: Divergence,
                 historical: Sequence[Pair], general: Sequence[Pair], config: StageConfig,
                 log: Callable[[dict[str, Any]], None]) -> dict[str, Any]:
-    """Train the LoRA on verified answers with distillation or SFT and the selected drift constraints.
+    """Distill the privileged teacher into the LoRA of `model` on the verified answers, under the drift budgets.
 
     records: {"studentIds", "teacherIds", "goldIds"}. The loss is the full-vocabulary KL(teacher || student) at every
     position of the verified answer. Training on the verified answer's own prefix, rather than on the student's
     samples, closes the student's degenerate paths (such as prompt echo), on which teacher and student agree and
-    the gradient vanishes. The learning rate decays linearly to zero, so the kept final iterate reflects the whole
-    stage rather than the label mix of its last minibatches. The SFT ablation uses answer cross-entropy
-    without teacher forwards. Disabled constraints still measure drift but never update their multiplier."""
+    the gradient vanishes. Each update measures both drifts without gradient, adds every active constraint's
+    worst-group divergence with weight lambda/epsilon, steps on the adapter, and moves the multipliers by bounded
+    dual ascent from the same measurement. The learning rate decays linearly to zero; the final iterate is kept."""
     trainable = [p for p in model.parameters() if p.requires_grad]
-    if config.objective not in ("distill", "sft"):
-        raise ValueError(f"Unknown training objective: {config.objective}")
     optimizer = torch.optim.AdamW(trainable, lr=config.learning_rate, weight_decay=0.0)
     decay = torch.optim.lr_scheduler.LambdaLR(optimizer, lambda step: 1.0 - step / config.updates)
     budgets = {"checkpoint": config.checkpoint_budget, "general": config.general_budget}
@@ -438,11 +432,11 @@ def train_stage(model, records: Sequence[dict[str, Any]], *, divergence: Diverge
         pairs = [Pair(records[i]["studentIds"], records[i]["goldIds"], teacher=records[i]["teacherIds"])
                  for i in indices]
         optimizer.zero_grad(set_to_none=True)
-        if config.objective == "distill":
-            divergence.attach_teacher(model, pairs)
-            losses = divergence(model, pairs, 1.0)
+        if config.objective == "sft":
+            loss = divergence.cross_entropy(model, pairs, 1.0)
         else:
-            losses = divergence.cross_entropy(model, pairs, 1.0)
+            divergence.attach_teacher(model, pairs)
+            loss = divergence(model, pairs, 1.0)
         drift = {}
         for name in ("checkpoint", "general"):
             drift[name], worst = group_drift(divergence, model, probes[name])
@@ -455,16 +449,15 @@ def train_stage(model, records: Sequence[dict[str, Any]], *, divergence: Diverge
             if budgets[name] is not None and probes[name]:
                 violation = min(1.0, drift[name] / budgets[name] - 1)  # bounded dual step
                 multipliers[name] = max(0.0, multipliers[name] + config.dual_rate * violation)
-        row = {"update": update, "objectiveLoss": sum(losses) / len(losses), "checkpointDrift": drift["checkpoint"],
+        row = {"update": update, "loss": sum(loss) / len(loss), "checkpointDrift": drift["checkpoint"],
                "generalDrift": drift["general"], "checkpointMultiplier": multipliers["checkpoint"],
                "generalMultiplier": multipliers["general"], "gradNorm": norm,
                "targetTokens": sum(len(p.completion) for p in pairs), "seconds": time.perf_counter() - started}
         history.append(row)
         log(row)
     tail = history[-max(1, len(history) // 4):]
-    return {"updates": len(history), "records": config.updates * config.batch_size,
-            "objective": config.objective, "objectiveLossFirst": history[0]["objectiveLoss"],
-            "objectiveLossLastQuarter": sum(r["objectiveLoss"] for r in tail) / len(tail),
+    return {"updates": len(history), "records": config.updates * config.batch_size, "objective": config.objective,
+            "lossFirst": history[0]["loss"], "lossLastQuarter": sum(r["loss"] for r in tail) / len(tail),
             "seconds": sum(r["seconds"] for r in history)}
 
 

@@ -203,12 +203,12 @@ uv run --locked --project packages/hero-drift-constrained-opd/python --python 3.
   python packages/hero-drift-constrained-opd/stream/run.py stream --help
 ```
 
-The CLI provides `prepare` (bundle), `stream` (GPU run), `report` (validation), and `score` (test scoring). See [packages/hero-drift-constrained-opd/stream/README.md](packages/hero-drift-constrained-opd/stream/README.md) for execution and cluster submission. Set `--split test` when preparing a run for the formal test schedule.
+The CLI provides `prepare` (bundle), `stream` (GPU run on the formal test schedule) and `score` (test scoring). Main runs use `prepare --seed 42`, `43` and `44`; the ablations are `prepare` options. See [packages/hero-drift-constrained-opd/stream/README.md](packages/hero-drift-constrained-opd/stream/README.md) for execution and the ablation table.
 
 <details>
 <summary><strong>Paper configuration</strong></summary>
 
-CLI defaults differ from the paper. Set these parameters explicitly and save `plan.json` with each run.
+`prepare` writes these settings into `plan.json`; save it with each run.
 
 | Parameter | Paper setting |
 | --- | --- |
@@ -224,7 +224,7 @@ CLI defaults differ from the paper. Set these parameters explicitly and save `pl
 | Checkpoint / base drift budgets | 0.05 / 0.05 |
 | Dual-ascent rate | 0.5 |
 
-The runner's skill guard also differs from the paper's strict residual test: it accepts a candidate whose replay-conditioned teacher NLL rises by at most `--harm-tolerance`. Check the saved plan against the manuscript. Baseline entry points and dependencies are in [packages/baselines/README.md](packages/baselines/README.md).
+The skill guard commits a candidate registry only if it lowers the window's mean residual and fits the registry budget. Baseline entry points and dependencies are in [packages/baselines/README.md](packages/baselines/README.md).
 
 </details>
 
@@ -363,7 +363,7 @@ General-anchor training probes are disjoint from G-test. Main comparisons use th
 | Paper (arXiv link coming soon) | Method, evaluation, ablations, and limitations |
 | [Experiment protocol](experiments/protocol.md) | Task stream, budgets, metrics, and evaluation schedule |
 | [Dataset guide](datasets/trace-plus-17/README.md) | Sources, revisions, construction, and dataset terms |
-| [Stream runner](packages/hero-drift-constrained-opd/stream/README.md) | Prepare, train, report, and score |
+| [Stream runner](packages/hero-drift-constrained-opd/stream/README.md) | Prepare, train, score, and ablations |
 | [Baselines](packages/baselines/README.md) | Comparison methods, dependencies, and provenance |
 | [Analysis](experiments/code/README.md) | Scored-panel schema and statistical summaries |
 | [Website](apps/official-website/README.md) | Interactive figures and local development |

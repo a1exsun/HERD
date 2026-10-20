@@ -1,5 +1,6 @@
 """CPU checks of the HERO stream primitives on a tiny random Qwen3.5 (path in HERO_TINY_QWEN)."""
 import os
+import random
 import sys
 from pathlib import Path
 
@@ -122,3 +123,67 @@ def test_skill_proposal_helpers():
     assert hero.skill_text("   ") == ""
     skill = hero.skill_from_proposal("t", "Do X: ", reply, tok, 6)
     assert skill == {"id": "t", "promptPrefix": "Do X: ", "instructions": "**Format:** one word. Rules: - pick"}
+
+
+def test_cross_entropy_matches_unchunked_oracle():
+    model = tiny()
+    head = hero.backbone_and_head(model)[1].weight.detach().float()
+    pairs = [hero.Pair([5, 6, 7, 8], [9, 10, 11]), hero.Pair([3, 4], [12, 13, 14, 15, 16])]
+    model.zero_grad()
+    values = hero.Divergence(head, token_budget=8, chunk=2).cross_entropy(model, pairs, 1.0)
+    ours = {n: p.grad.clone() for n, p in model.named_parameters() if p.requires_grad}
+    model.zero_grad()
+    expected = torch.stack([F.cross_entropy(model(input_ids=torch.tensor([p.student + p.completion[:-1]]))
+                                            .logits[0, len(p.student) - 1:].float(), torch.tensor(p.completion))
+                            for p in pairs])
+    expected.mean().backward()
+    assert torch.allclose(torch.tensor(values), expected.detach(), atol=1e-5)
+    for name, parameter in model.named_parameters():
+        if parameter.requires_grad:
+            assert torch.allclose(ours[name], parameter.grad, atol=1e-5, rtol=1e-4), name
+
+
+def test_stage_without_anchors_audits_drift_but_never_constrains():
+    model = tiny()
+    head = hero.backbone_and_head(model)[1].weight.detach().float()
+    divergence = hero.Divergence(head)
+    probes = [hero.Pair([5, 6, 7], [8, 9, 10], group="a")]
+    hero.anchor_targets(model, probes)
+    records = [{"studentIds": [3, 4, 5], "teacherIds": [1, 3, 4, 5], "goldIds": [6, 7]},
+               {"studentIds": [8, 9], "teacherIds": [1, 8, 9], "goldIds": [10]}]
+    rows = []
+    config = hero.StageConfig(updates=3, batch_size=2, checkpoint_budget=None, general_budget=1e-9)
+    summary = hero.train_stage(model, records, divergence=divergence, historical=probes, general=probes,
+                               config=config, log=rows.append)
+    assert summary["updates"] == 3 and len(rows) == 3
+    assert all(r["checkpointMultiplier"] == 0.0 for r in rows)
+    assert rows[-1]["generalMultiplier"] > 0  # the budgeted anchor is enforced on the same drift
+    sft = hero.train_stage(model, records, divergence=divergence, historical=[], general=[],
+                           config=hero.StageConfig(updates=1, batch_size=2, objective="sft"), log=lambda row: None)
+    assert sft["objective"] == "sft"
+
+
+def test_window_stops_at_the_first_overflow_and_memory_keeps_the_highest_residuals():
+    import run
+
+    stream = object.__new__(run.Stream)
+    stream.plan = {"seed": 42, "harness": {"windowBudgetTokens": 30, "memory": "residual",
+                                           "residualBudgetTokens": 40, "generalReserveTokens": 10}}
+    stream.tokens = lambda text: text.split()
+    records = [{"id": str(k), "prompt": "w " * size, "answer": "a"} for k, size in enumerate((5, 20, 3, 4))]
+    window = stream.window({"stage": 1, "taskId": "t"}, records)
+    order = records[:]
+    random.Random(43).shuffle(order)
+    expected, used = [], 0
+    for r in order:
+        size = len(r["prompt"].split()) + 1 + 16
+        if used + size > 30:
+            break
+        expected.append(r["id"])
+        used += size
+    assert [r["id"] for r in window] == expected and all(r["taskId"] == "t" for r in window)
+    stream.residuals = lambda model, harness, rows: [{"a": 0.1, "b": 0.9, "c": 0.5}[r["id"]] for r in rows]
+    pool = [{"id": "a", "tokens": 10}, {"id": "b", "tokens": 25}, {"id": "c", "tokens": 10}]
+    assert [r["id"] for r in stream.refresh(None, hero.Harness(), pool, 2)] == ["b"]
+    stream.plan["harness"]["memory"] = "uniform"
+    assert sum(r["tokens"] for r in stream.refresh(None, hero.Harness(), pool, 2)) <= 30

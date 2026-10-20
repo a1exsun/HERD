@@ -1,107 +1,87 @@
 # HERD stream runner
 
-`hero.py` implements the stage algorithm; `run.py` prepares a self-contained
-bundle, trains the stream, evaluates test prompts and scores predictions locally.
+Self-contained HERD implementation for the TRACE+17 stream: one GPU job runs every stage.
+`hero.py` holds the algorithm, and `run.py` prepares bundles, runs the stream and scores test predictions.
+The settings below are the paper's; `plan.json` records them.
 
-## Stage procedure
+## Stage t
 
-1. Fill the 8,192-token evidence window in seeded order, skipping records that
-   do not fit whole. The frozen checkpoint answers the window; up to four
-   mistakes and sixteen examples guide one greedy skill proposal from the base.
-2. Keep the candidate unless it is empty, exceeds the 24,576-token registry
-   budget, or raises answer-replay teacher NLL beyond `--harm-tolerance` (0.3).
-3. Rank the retained/new record pool by residual under the pre-training
-   checkpoint and committed harness. Keep whole records under 24,576 tokens;
-   the remaining 8,192 tokens are reserved for general probes.
-4. Train a fresh rank-32 LoRA, alpha 64, for 32 updates of 32 records with AdamW
-   at 1e-4 decaying linearly to zero. The student sees the bare prompt; the
-   frozen teacher receives the skill and verified answer replay. Forward KL is
-   scored at verified-answer positions. Bare prompt plus target must fit 16,384
-   tokens. Checkpoint probes come from the previous memory, up to eight per task;
-   base probes are fixed across the stream. Both use at most 32 greedy tokens.
-5. Audit both drifts, save the bf16 adapter, merge it, and evaluate the formal
-   test schedule. Stage records retain the registry, guard, memory, losses,
-   drift, adapter checksum and merged-weight fingerprint.
+Stage t receives the deployed predictor θ_{t-1} (merged weights) and the harness H_{t-1} = (K, R).
 
-Each drift is the worst group's mean KL. Its multiplier uses bounded dual
-ascent at rate 0.5; both full-method budgets are 0.05. Skills route by the
-longest NFKC/whitespace/lowercase-normalized prefix. Task memory is never replayed
-as training targets.
+1. **Harness evolution.** The window A_t is drawn from the task's training records in a per-stage seeded order,
+   whole records only (prompt + answer + 16 tokens each), until the next record would overflow B_A = 8,192 tokens.
+   - The frozen θ_{t-1} (the model with its LoRA disabled) answers every record of A_t greedily; up to 4 answers
+     that differ from the verified output after normalization are the mistakes shown to the writer.
+   - The frozen base model θ_0 (kept on the CPU and moved to the GPU only for this call) writes the task's skill in
+     one greedy call with thinking off, at most 768 new tokens. Its prompt (`PROPOSER` in `hero.py`) lists up to 16
+     records of A_t, those whose answers open differently first, inputs clipped to 384 tokens (head and last third)
+     and outputs to 128, then the mistakes, and asks for a skill under four headers: Format, Rules, Avoid, Examples.
+   - The skill's routing prefix is the longest common prefix of the task's training prompts, cut back to a
+     whitespace boundary; its instructions are the reply from its Format line on, clipped to 768 tokens. A prompt
+     executes only the skill with the longest matching prefix (NFKC, collapsed whitespace, lowercase), shown as
+     the system message; a new skill replaces one with the same prefix or task id.
+   - The candidate registry is committed only if it lowers the mean residual of A_t under the frozen θ_{t-1}
+     (the verified answer's mean NLL with only the routed skill and the bare prompt in context, no replayed answer)
+     and its serialization fits B_K = 24,576 tokens. Otherwise K_{t-1} is kept.
+2. **Drift-constrained distillation.**
+   - The teacher is the frozen θ_{t-1}, given the routed skill as the system message, the prompt, the verified
+     answer replayed as its own previous turn, and "Repeat your previous answer exactly, with no other text."
+   - The student is θ_{t-1} plus a fresh rank-32 LoRA (alpha 64, no dropout, every text-decoder linear layer) and
+     sees the bare prompt. The loss is the full-vocabulary KL(teacher ‖ student) at every position of the verified
+     answer (plus the end-of-turn token). A record trains only if its bare prompt and answer fit 16,384 tokens;
+     longer records are excluded.
+   - Checkpoint drift: KL(θ_{t-1} ‖ student) on the first 32 greedy tokens of θ_{t-1} for up to 8 prompts (at most
+     2,048 tokens) per task retained in R_{t-1}, grouped by task. Base drift: KL(θ_0 ‖ student) on the first 32
+     greedy tokens of θ_0 for the reserved general set G (48 non-test GSM8K, IFEval and SuperNI records within
+     B_G = 8,192 tokens), grouped by source. Anchor hidden states are cached once.
+   - Each drift is the worst group's mean KL, held under ε = 0.05 by a multiplier with bounded dual ascent
+     (rate 0.5). Each update measures both drifts, adds every active constraint's worst group with weight λ/ε,
+     steps on the adapter and then moves the multipliers.
+   - 32 updates of 32 records in a seeded shuffle, AdamW without weight decay, lr 1e-4 decaying linearly to zero,
+     gradient clip 1.0; the final iterate is kept.
+3. **Merge and refresh.** The bf16 adapter is saved and merged into θ_t. R_t = TopBudget(R_{t-1} ∪ A_t) under
+   B_R − B_G = 24,576 tokens: records in decreasing residual under θ_t executing K_t, stable-id ties, each kept only
+   if it fits whole.
+4. **Test predictions** on the formal schedule: the current task after every stage; all seen tasks and the full
+   G-test at stages 4, 8, 16 and 25; tasks 1–8 at stages 12 and 20; the 200-item G-test probe otherwise. Greedy,
+   thinking off, at most 5,120 new tokens; an input over 16,384 tokens is an empty prediction. Stage 0 is the
+   base-model run (`packages/baselines/base`).
 
-## Prepare and run
+`stage-NN/stage.json` records the registry, the guard, the memory, drift before and after training, the training
+summary and the adapter's SHA-256; `training-log.jsonl` has every update.
 
-From the repository root, with materialized datasets and the pinned tokenizer:
+## Use
 
 ```sh
-python packages/hero-drift-constrained-opd/stream/run.py prepare \
-  --repository . --output /path/bundle --variant full --seed 42
+python run.py prepare --repository ../../.. --output /path/bundle --seed 42
+bash /path/bundle/bootstrap.sh /path/bundle /path/output      # on a CUDA 12.4 machine with CPython 3.10
+python run.py score /path/output --repository ../../.. --output score.json
 ```
 
-The bundle always contains the formal test prompts without their gold answers.
-It includes no development/validation evaluation path or cluster launcher.
-On a CUDA 12.4-compatible machine with Python 3.10, run:
+`score` needs the evaluator dependencies (`packages/evaluator/python`) next to `torch`. Completed stages are
+replayed from their saved adapters, each verified against its `stage.json`, so rerunning the same command continues
+the stream. `stream --test-stages 16,25` limits a job to those stages' predictions and stops after the last.
+`stream --decode-tokens` sets the decoding batch (rows × longest row; 98,304 fits a 40 GB A100).
 
-```sh
-bash /path/bundle/bootstrap.sh /path/bundle /path/output
-```
+### Ablations
 
-`HERO_PYTHON` selects a different Python 3.10 interpreter. Alternatively, with
-the bundle's pinned dependencies installed:
-
-```sh
-python /path/bundle/run.py stream --bundle /path/bundle \
-  --checkpoint /path/qwen-base --output /path/output
-python packages/hero-drift-constrained-opd/stream/run.py score /path/output \
-  --repository . --output output/score.json
-```
-
-Decode greedily with thinking disabled, up to 5,120 new tokens and 16,384 input
-tokens. Score the current task after each stage; all seen tasks and full G-test
-at 4/8/16/25; tasks 1–8 at 12/20; the nested G probe otherwise. Stage 0 comes
-from the separate base-model runner. Inputs over the ceiling get empty predictions.
-
-## Seeds and resume
-
-`--seed` controls evidence and batch order. `--init-seed` independently controls
-LoRA initialization and defaults to `--seed`; stage t uses `init_seed + t`.
-Each fresh adapter is seeded at creation, so a resumed stage does not depend on
-prior RNG consumption. Cross-hardware bitwise equality is not assumed.
-
-The output directory is bound to the bundle digest. Completed stages replay
-checksum-verified adapters; use a distinct bundle/output for each seed or
-variant. `--test-stages 16,25` restricts test decoding and stops after the last
-requested stage. `--decode-tokens` controls batch memory (rows × longest row).
-
-## Paper ablations
-
-| `prepare --variant` | Change |
+| Paper row | `prepare` option |
 | --- | --- |
-| `full` | Full method, default. |
-| `no-harness` | No proposals or guard calls; empty skills. Answer replay, memory and anchors remain. |
-| `uniform-residual` | Uniform SHA-256(seed:id) priorities over retained/new records, under the same token budget. |
-| `no-checkpoint-anchor` | No checkpoint penalty or multiplier updates. |
-| `no-base-anchor` | No base penalty or multiplier updates. |
-| `no-anchors` | Neither penalty nor multiplier updates. |
-| `sft` | Verified-answer cross-entropy replaces distillation; both constraints remain. |
-| `drift-budget-tight` | Checkpoint budget 0.02. |
-| `drift-budget-loose` | Checkpoint budget 0.1. |
+| − skills | `--no-skills` |
+| uniform memory | `--memory uniform` |
+| − checkpoint anchor | `--checkpoint-budget none` |
+| − base anchor | `--general-budget none` |
+| − both anchors | `--checkpoint-budget none --general-budget none` |
+| SFT objective | `--objective sft` |
+| ε_C = 0.02 / 0.1 | `--checkpoint-budget 0.02` / `0.1` |
+| + harness (infer.) | `stream --inference-harness <full run>/stage-25/stage.json`, then `score --predictions test-predictions.harness.jsonl` |
 
-Disabled anchors still measure drift. SFT skips teacher forwards and shares the
-chunked, per-record token-mean accumulation with KL. Logs use `objectiveLoss`;
-training summaries include `objective`, `objectiveLossFirst` and
-`objectiveLossLastQuarter`. No-harness guard measurements are null. Uniform
-residual selection is distinct from the fixed 128-record replay baseline.
+A removed anchor is still measured and audited, never constrained.
 
-For the inference-only `+ harness` variant, replay a completed full run's
-adapter chain and attach its final routed harness. The source run is read-only:
+## Tests
+
+Tests run on CPU with a tiny random Qwen3.5 at `HERO_TINY_QWEN` (they skip without it):
 
 ```sh
-python /path/bundle/run.py evaluate-harness --bundle /path/bundle \
-  --run /path/output --checkpoint /path/qwen-base --output /path/with-harness
-python packages/hero-drift-constrained-opd/stream/run.py score /path/with-harness \
-  --repository . --diagonal-run /path/output --output output/with-harness.json
+HERO_TINY_QWEN=/path/tiny-qwen python -m pytest tests
 ```
-
-This evaluates all tasks and full G-test at the final stage without training.
-Acquisition and the reference for forgetting use the original bare-prompt
-diagonal; only the final row changes.

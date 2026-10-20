@@ -5,10 +5,10 @@ import {
   guardSkill,
   parseHarnessSpecification,
   proposalPrompt,
+  residualMessages,
   routeSkill,
   serializeHarness,
   skillText,
-  teacherMessages,
   withSkill,
   type HarnessSpecification
 } from "../src/index.js";
@@ -43,35 +43,34 @@ describe("harness evolving", () => {
       .toBe('{"schemaVersion": "hero-harness-spec-v1", "skills": [{"id": "t", "instructions": "i", "promptPrefix": "p"}]}');
   });
 
-  it("builds the proposal from distinct answer openings and the common prompt prefix", () => {
+  it("builds the proposal from distinct answer openings, the common prompt prefix and the mistakes", () => {
     const records = [{ answer: "A first" }, { answer: "a first again" }, { answer: "B other" }];
     expect(distinctFirst(records).map((r) => r.answer)).toEqual(["A first", "B other", "a first again"]);
     expect(commonPrefix(["Classify this text: one", "Classify this text: two"])).toBe("Classify this text: ");
-    const prompt = proposalPrompt([{ input: "in", output: "out" }]);
-    expect(prompt).toContain('<candidate n="1">\n<input>\nin\n</input>\n<output>\nout\n</output>\n</candidate>');
-    expect(prompt).toContain('"Format:", "Rules:", "Avoid:", "Examples:"');
-    expect(skillText("Preamble\nFormat: one word")).toBe("Format: one word");
-    expect(proposalPrompt([], [{ input: "x", prediction: "wrong", output: "right" }])).toContain("<model_output>\nwrong\n</model_output>");
+    const prompt = proposalPrompt([{ input: "in", output: "out $&" }], [{ input: "x", prediction: "wrong", output: "B" }]);
+    expect(prompt).toContain('<candidate n="1">\n<input>\nin\n</input>\n<output>\nout $&\n</output>\n</candidate>');
+    expect(prompt).toContain("<model_output>\nwrong\n</model_output>");
+    expect(prompt).toContain('Start your reply with "Format:". Keep the whole skill under 350 words.');
+    expect(proposalPrompt([{ input: "in", output: "out" }])).not.toContain("<mistake>");
+    expect(skillText("Sure.\n**Format:** one letter.\nRules:\n- x")).toBe("**Format:** one letter.\nRules:\n- x");
+    expect(skillText("Answer with one letter.")).toBe("Answer with one letter.");
   });
 
-  it("gives the teacher the routed skill and the verified answer as its own previous turn", () => {
-    expect(teacherMessages("q", registry.skills[0], "ans")).toEqual([
+  it("scores residuals with only the routed skill and the bare prompt", () => {
+    expect(residualMessages("q", registry.skills[0])).toEqual([
       { role: "system", content: "Apply this task skill.\n<skill>\nx\n</skill>" },
-      { role: "user", content: "q" },
-      { role: "assistant", content: "ans" },
-      { role: "user", content: "Repeat your previous answer exactly, with no other text." }
+      { role: "user", content: "q" }
     ]);
-    expect(teacherMessages("q", undefined, "ans")[0]?.role).toBe("user");
+    expect(residualMessages("q", undefined)).toEqual([{ role: "user", content: "q" }]);
   });
 
-  it("commits unless the skill is empty, overflows the registry or raises teacher NLL beyond the tolerance", () => {
-    const base = { instructions: "do it", registryTokens: 100, registryTokenBudget: 8192, harmTolerance: 0.3 };
-    expect(guardSkill({ ...base, teacherNll: { previous: 0.02, candidate: 0.25 } })).toMatchObject({ committed: true });
-    expect(guardSkill({ ...base, teacherNll: { previous: 0.02, candidate: 0.4 } }))
-      .toMatchObject({ committed: false, reasons: ["teacher-nll-rise-exceeds-tolerance"] });
-    expect(guardSkill({ ...base, instructions: " ", registryTokens: 9000, teacherNll: { previous: 0.1, candidate: 0.05 } }))
-      .toMatchObject({ committed: false, reasons: ["empty-skill", "registry-budget-exceeded"] });
-    expect(guardSkill({ ...base, teacherNll: { previous: 0.1, candidate: 0.05 } }).gain).toBeCloseTo(0.05);
+  it("commits only a registry that lowers the window residual and fits the budget", () => {
+    const base = { registryTokens: 100, registryTokenBudget: 24576 };
+    expect(guardSkill({ ...base, residual: { previous: 1.2, candidate: 0.8 } })).toMatchObject({ committed: true });
+    expect(guardSkill({ ...base, residual: { previous: 1.2, candidate: 0.8 } }).gain).toBeCloseTo(0.4);
+    expect(guardSkill({ ...base, residual: { previous: 0.8, candidate: 0.8 } }))
+      .toMatchObject({ committed: false, reasons: ["window-residual-not-lowered"] });
+    expect(guardSkill({ ...base, registryTokens: 30000, residual: { previous: 1.2, candidate: 0.8 } }))
+      .toMatchObject({ committed: false, reasons: ["registry-budget-exceeded"] });
   });
-
 });

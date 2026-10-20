@@ -43,19 +43,20 @@ describe("harness evolution through the local bridge", () => {
     expect((await proposeSkill(bridge, { taskId: "t", specification: empty, evidence })).window).toBe(1);
   });
 
-  it("commits unless the routed skill raises the teacher's NLL beyond the tolerance", async () => {
+  it("commits only if the routed skill lowers the window's residual", async () => {
     const candidate = JSON.stringify({ schemaVersion: "hero-harness-spec-v1",
       skills: [{ id: "trace:C-STANCE", promptPrefix: "Classify the stance: ", instructions: "Answer with one letter." }] });
-    const mild = fakeBridge((messages) => (messages[0]!.role === "system" ? 0.2 : 0.05));
-    const accepted = await guardProposal(mild.bridge, { specification: empty, candidateSpecification: candidate, evidence });
-    expect(accepted).toMatchObject({ committed: true, teacherVersionId: "base" });
-    expect(accepted.teacherNll.previous).toBeCloseTo(0.05);
-    expect(accepted.teacherNll.candidate).toBeCloseTo(0.2);
-    expect(mild.calls.targetNll).toHaveLength(6);
-    const harmful = fakeBridge((messages) => (messages[0]!.role === "system" ? 0.6 : 0.05));
-    expect(await guardProposal(harmful.bridge, { specification: empty, candidateSpecification: candidate, evidence }))
-      .toMatchObject({ committed: false, reasons: ["teacher-nll-rise-exceeds-tolerance"] });
-    await expect(guardProposal(mild.bridge, { specification: empty, candidateSpecification: empty, evidence }))
+    const helpful = fakeBridge((messages) => (messages[0]!.role === "system" ? 0.4 : 0.9));
+    const accepted = await guardProposal(helpful.bridge, { specification: empty, candidateSpecification: candidate, evidence });
+    expect(accepted).toMatchObject({ committed: true, checkpointVersionId: "base" });
+    expect(accepted.residual.previous).toBeCloseTo(0.9);
+    expect(accepted.residual.candidate).toBeCloseTo(0.4);
+    expect(helpful.calls.targetNll).toHaveLength(6);
+    expect((helpful.calls.targetNll![0] as { messages: unknown[] }).messages).toEqual([{ role: "user", content: "Classify the stance: a" }]);
+    const unhelpful = fakeBridge((messages) => (messages[0]!.role === "system" ? 0.9 : 0.9));
+    expect(await guardProposal(unhelpful.bridge, { specification: empty, candidateSpecification: candidate, evidence }))
+      .toMatchObject({ committed: false, reasons: ["window-residual-not-lowered"] });
+    await expect(guardProposal(helpful.bridge, { specification: empty, candidateSpecification: empty, evidence }))
       .rejects.toThrow("exactly one skill");
   });
 });

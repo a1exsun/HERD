@@ -71,9 +71,9 @@ interface HarnessGuard {
   committed: boolean;
   gain: number;
   reasons: string[];
-  teacherNll: { previous: number; candidate: number };
+  residual: { previous: number; candidate: number };
   registryTokens: number;
-  teacherVersionId: string;
+  checkpointVersionId: string;
 }
 
 function parseEvidence(text: string): unknown[] {
@@ -85,8 +85,8 @@ function parseEvidence(text: string): unknown[] {
 const MODULE_DETAILS: Record<HeroModuleId, { eyebrow: string; body: string; bullets: string[] }> = {
   "harness-evolving": {
     eyebrow: "Bounded non-parametric update",
-    body: "The active model writes one skill per task from a bounded window of verified examples and the checkpoint's mistakes; the guard rejects skills that raise teacher NLL beyond its tolerance.",
-    bullets: ["Active-model skill writer", "Window, skill and registry budgets", "High-residual retention"]
+    body: "The base model writes one skill per task from a bounded window of verified examples and the checkpoint's mistakes; the registry is committed only if it lowers the window's residual.",
+    bullets: ["Base-model skill writer", "Window, skill and registry budgets", "High-residual retention"]
   },
   "drift-constrained-opd": {
     eyebrow: "Recursive parameter update",
@@ -159,7 +159,7 @@ function App() {
   async function guardHarness() {
     if (!proposal) return;
     setBusy(true);
-    setStatus("Scoring teacher NLL with and without the skill…");
+    setStatus("Scoring the window's residual with and without the skill…");
     try {
       const result = await apiPost<HarnessGuard>("/hero/api/harness-evolving/guard", {
         input: { specification: previousSpecification, candidateSpecification: proposal.candidateSpecification, evidence: parseEvidence(evidence) }
@@ -198,7 +198,7 @@ function App() {
 
       <section hidden={selected !== "harness-evolving"} aria-label="Harness Evolving workspace">
         <div className="panel workbench">
-          <div className="panelHeader"><div><h2>Write and guard a task skill</h2><p>The local Qwen writes the task's skill from a window of verified examples and its own mistakes on them. The guard rejects an empty skill, an oversized registry or a teacher-NLL rise beyond the tolerance.</p></div><span className="subtleTag">Instruction learning</span></div>
+          <div className="panelHeader"><div><h2>Write and guard a task skill</h2><p>The local Qwen writes the task's skill from a window of verified examples and its own mistakes on them. The guard commits it only if it lowers the window's mean residual and fits the registry budget.</p></div><span className="subtleTag">Instruction learning</span></div>
           <div className="harnessGrid">
             <div className="harnessInputs">
               <label><span className="fieldTitle">Task id <span>skill id</span></span>
@@ -217,7 +217,7 @@ function App() {
               {proposal ? <>
                 <label className="candidateOutput"><span className="srOnly">Proposed skill</span><textarea spellCheck={false} readOnly rows={6} value={proposal.skill.instructions} /></label>
                 <p className="fieldHint">Routing prefix <code>{JSON.stringify(proposal.skill.promptPrefix)}</code> · written by version <code>{proposal.proposerVersionId}</code>{proposal.proposerVersionId !== "base" ? " (the stream runner writes with the base model; activate base for an identical proposal)" : ""}</p>
-                {guard ? <p className="fieldHint">Teacher NLL {guard.teacherNll.previous.toFixed(4)} → {guard.teacherNll.candidate.toFixed(4)} nats/token · registry {guard.registryTokens} tokens · checkpoint version <code>{guard.teacherVersionId}</code> · <strong>{guard.committed ? "commit" : `keep current (${guard.reasons.join(", ")})`}</strong></p> : <p className="fieldHint">Run the guard before committing.</p>}
+                {guard ? <p className="fieldHint">Window residual {guard.residual.previous.toFixed(4)} → {guard.residual.candidate.toFixed(4)} nats/token · registry {guard.registryTokens} tokens · checkpoint version <code>{guard.checkpointVersionId}</code> · <strong>{guard.committed ? "commit" : `keep current (${guard.reasons.join(", ")})`}</strong></p> : <p className="fieldHint">Run the guard before committing.</p>}
               </> : <div className="candidateEmpty"><Icon name="harness-evolving" /><strong>{busy ? "Writing the skill…" : "Your next skill starts here"}</strong><p>{busy ? "The local Qwen is reading the verified examples." : "Submit the task evidence to see a proposed skill here."}</p></div>}
             </div>
           </div>

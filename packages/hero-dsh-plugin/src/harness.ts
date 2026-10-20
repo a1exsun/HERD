@@ -5,7 +5,7 @@ import {
   guardSkill,
   parseHarnessSpecification,
   proposalPrompt,
-  teacherMessages,
+  residualMessages,
   routeSkill,
   serializeHarness,
   skillText,
@@ -35,10 +35,10 @@ export class QwenBridgeClient {
     return (await this.post<{ counts: number[] }>("/hero/token-counts", { texts })).counts;
   }
 
-  /** Mean NLL of the verified answer, clipped and closed with the end-of-turn token as in the stream runner. */
+  /** Mean NLL of the verified answer after the chat prompt: the residual when the prompt holds only the routed skill
+   * and the bare input. */
   async targetNll(messages: Message[], target: string): Promise<number> {
-    return (await this.post<{ nll: number }>("/hero/target-nll",
-      { messages, target, maxTargetTokens: HARNESS_SETTINGS.targetTokens, endOfTurn: true })).nll;
+    return (await this.post<{ nll: number }>("/hero/target-nll", { messages, target })).nll;
   }
 
   /** One greedy completion with thinking off. */
@@ -118,42 +118,31 @@ export interface GuardInput {
   specification: string;
   candidateSpecification: string;
   evidence: EvidenceRecord[];
-  harmTolerance?: number;
   registryTokenBudget?: number;
 }
 
-/** Commit unless the new skill is empty, overflows the registry, or raises the teacher's NLL beyond the tolerance. */
+/** Commit only if the candidate registry lowers the window's mean residual and fits the registry budget. */
 export async function guardProposal(bridge: QwenBridgeClient, input: GuardInput) {
   const previous = parseHarnessSpecification(input.specification);
   const candidate = parseHarnessSpecification(input.candidateSpecification);
-  const evidence = checkEvidence(input.evidence);
+  const window = await windowOf(bridge, checkEvidence(input.evidence));
   const unchanged = new Set(previous.skills.map((s) => JSON.stringify(s)));
   const added = candidate.skills.filter((s) => !unchanged.has(JSON.stringify(s)));
   if (added.length !== 1) throw new Error("The candidate must add or replace exactly one skill.");
-  const teacherNll = {
-    previous: await meanTeacherNll(bridge, previous, evidence),
-    candidate: await meanTeacherNll(bridge, candidate, evidence)
+  const residual = {
+    previous: await meanResidual(bridge, previous, window),
+    candidate: await meanResidual(bridge, candidate, window)
   };
   const [registryTokens] = await bridge.tokenCounts([serializeHarness(candidate)]);
   const result = guardSkill({
-    instructions: added[0]!.instructions,
     registryTokens: registryTokens!,
     registryTokenBudget: input.registryTokenBudget ?? HARNESS_SETTINGS.registryTokenBudget,
-    harmTolerance: input.harmTolerance ?? HARNESS_SETTINGS.harmTolerance,
-    teacherNll
+    residual
   });
-  return { ...result, teacherNll, registryTokens, teacherVersionId: await bridge.versionId() };
+  return { ...result, residual, registryTokens, checkpointVersionId: await bridge.versionId() };
 }
 
-async function meanTeacherNll(bridge: QwenBridgeClient, registry: HarnessSpecification, evidence: EvidenceRecord[]): Promise<number> {
-  let total = 0;
-  for (const record of evidence) {
-    total += await bridge.targetNll(teacherMessages(record.prompt, routeSkill(registry, record.prompt), record.answer), record.answer);
-  }
-  return total / evidence.length;
-}
-
-/** A_t: whole records in the given order, each counted as prompt + answer + 16 tokens, skipping records that would
+/** A_t: whole records in the given order, each counted as prompt + answer + 16 tokens, until the next record would
  * overflow the window budget. */
 async function windowOf(bridge: QwenBridgeClient, evidence: EvidenceRecord[]): Promise<EvidenceRecord[]> {
   const counts = await bridge.tokenCounts(evidence.flatMap((r) => [r.prompt, r.answer]));
@@ -161,12 +150,20 @@ async function windowOf(bridge: QwenBridgeClient, evidence: EvidenceRecord[]): P
   let used = 0;
   for (const [k, record] of evidence.entries()) {
     const size = counts[2 * k]! + counts[2 * k + 1]! + 16;
-    if (used + size > HARNESS_SETTINGS.windowTokens) continue;
+    if (used + size > HARNESS_SETTINGS.windowTokens) break;
     window.push(record);
     used += size;
   }
-  if (window.length === 0) throw new Error("No evidence record fits the window budget.");
+  if (window.length === 0) throw new Error("The first evidence record overflows the window budget.");
   return window;
+}
+
+async function meanResidual(bridge: QwenBridgeClient, registry: HarnessSpecification, window: EvidenceRecord[]): Promise<number> {
+  let total = 0;
+  for (const record of window) {
+    total += await bridge.targetNll(residualMessages(record.prompt, routeSkill(registry, record.prompt)), record.answer);
+  }
+  return total / window.length;
 }
 
 function normalize(text: string): string {

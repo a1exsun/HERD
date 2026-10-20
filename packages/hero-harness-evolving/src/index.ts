@@ -1,9 +1,10 @@
 import type { DatasetItem } from "@hero/core";
 
-// Harness evolving as in the stream runner (packages/hero-drift-constrained-opd/stream/hero.py, run.py): the base
-// model writes each task's skill from verified examples, and the skill is committed unless it raises the frozen
-// teacher's NLL of the verified answers by more than a tolerance. This package holds the pure parts; the DSH plugin
-// runs the model calls through the local Qwen bridge.
+// Harness evolution as in the stream runner (packages/hero-drift-constrained-opd/stream/hero.py, run.py): a
+// model writes each task's skill from a bounded window of verified examples and the checkpoint's mistakes on it, and
+// the candidate registry is committed only if it lowers the window's mean residual (verified-answer NLL with the
+// routed skill and the bare prompt in context) and fits the registry budget. This package holds the pure parts; the
+// DSH plugin runs the model calls through the local Qwen bridge.
 
 export interface Skill { id: string; promptPrefix: string; instructions: string }
 
@@ -12,7 +13,7 @@ export interface HarnessSpecification {
   skills: Skill[];
 }
 
-/** Paper budgets for the local DSH proposal interface. */
+/** The stream runner's settings (`run.py prepare`). */
 export const HARNESS_SETTINGS = {
   windowTokens: 8192,
   candidates: 16,
@@ -22,13 +23,10 @@ export const HARNESS_SETTINGS = {
   mistakeNewTokens: 1536,
   proposalMaxNewTokens: 768,
   skillTokens: 768,
-  registryTokenBudget: 24576,
-  harmTolerance: 0.3,
-  targetTokens: 16384
+  registryTokenBudget: 24576
 } as const;
 
 export const HARNESS_SYSTEM = "Apply this task skill.\n<skill>\n{instructions}\n</skill>";
-export const REPLAY = "Repeat your previous answer exactly, with no other text.";
 export const PROPOSER = `You write the skill for a task: guidance that a language model reads before solving one input of the task.
 
 Candidate examples of the task, numbered, each with its verified correct output:
@@ -147,44 +145,39 @@ export function skillText(reply: string): string {
   return lines.slice(Math.max(first, 0)).join("\n").trim();
 }
 
-/** Teacher context: the routed skill as the system message and the verified answer replayed as the previous turn. */
-export function teacherMessages(prompt: string, skill: Skill | undefined, target: string): Array<{ role: string; content: string }> {
+/** Residual context: only the routed skill as the system message and the bare prompt; no answer is replayed. */
+export function residualMessages(prompt: string, skill: Skill | undefined): Array<{ role: string; content: string }> {
   return [
     ...(skill ? [{ role: "system", content: HARNESS_SYSTEM.replace("{instructions}", () => skill.instructions) }] : []),
-    { role: "user", content: prompt },
-    { role: "assistant", content: target },
-    { role: "user", content: REPLAY }
+    { role: "user", content: prompt }
   ];
 }
 
 export interface SkillGuardInput {
-  instructions: string;
   registryTokens: number;
   registryTokenBudget: number;
-  harmTolerance: number;
-  /** Mean teacher NLL (nats per token) of the verified answers under the current and the candidate registry. */
-  teacherNll: { previous: number; candidate: number };
+  /** Mean residual (nats per token) of the window under the current and the candidate registry. */
+  residual: { previous: number; candidate: number };
 }
 
 export interface SkillGuardResult {
   committed: boolean;
-  /** previous minus candidate NLL: positive when the skill helps the teacher. */
+  /** previous minus candidate residual: positive when the skill helps the checkpoint predict the window. */
   gain: number;
   reasons: string[];
 }
 
+/** The candidate is committed only if it lowers the window's mean residual and fits the registry budget. */
 export function guardSkill(input: SkillGuardInput): SkillGuardResult {
-  for (const [name, value] of [["teacherNll.previous", input.teacherNll.previous], ["teacherNll.candidate", input.teacherNll.candidate],
-    ["harmTolerance", input.harmTolerance]] as const) {
+  for (const [name, value] of [["residual.previous", input.residual.previous], ["residual.candidate", input.residual.candidate]] as const) {
     if (!Number.isFinite(value) || value < 0) throw new Error(`${name} must be finite and non-negative.`);
   }
   assertNonNegativeInteger("registryTokens", input.registryTokens);
   assertPositiveInteger("registryTokenBudget", input.registryTokenBudget);
-  const gain = input.teacherNll.previous - input.teacherNll.candidate;
+  const gain = input.residual.previous - input.residual.candidate;
   const reasons: string[] = [];
-  if (!input.instructions.trim()) reasons.push("empty-skill");
+  if (!(gain > 0)) reasons.push("window-residual-not-lowered");
   if (input.registryTokens > input.registryTokenBudget) reasons.push("registry-budget-exceeded");
-  if (-gain > input.harmTolerance) reasons.push("teacher-nll-rise-exceeds-tolerance");
   return { committed: reasons.length === 0, gain, reasons };
 }
 

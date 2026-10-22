@@ -173,7 +173,7 @@ pnpm test          # TypeScript workspace tests
 pnpm eval:test     # Shared Python scorers
 pnpm opd:test      # Distillation runtime and stream tests
 pnpm opd:validate  # Python source compilation checks
-pnpm analysis:test # Statistical analysis and data preparation tests
+pnpm analysis:test # Results pipeline and data preparation tests
 ```
 
 These checks do not run GPU training. See the DSH section for integration checks.
@@ -233,16 +233,15 @@ The skill guard commits a candidate registry only if it lowers the window's mean
 
 #### 4. Score and analyze results
 
-Decode and score with the method runner, then analyze its scored item panels:
+Score each run with its method runner, list the runs in a copy of
+[`experiments/code/runs.example.json`](experiments/code/runs.example.json), then export and draw:
 
 ```sh
-python3 experiments/code/summarize.py /path/scored-panels.json \
-  --reference /path/baseline-panels.json --output output/comparison.json
+uv run --project packages/evaluator/python python experiments/code/export-paper-experiments.py --runs runs.json
+for script in experiments/code/paper-*.py; do uv run --with matplotlib --with numpy python "$script"; done
 ```
 
-Input: `taskOrder` and `runs`, with `learned`, `final`, `generalBase`, and `generalFinal` panels per seed. Each panel maps tasks or categories to `{item_id: score}`. Keep failed predictions as zero; match item IDs and manifests across methods. Omit `--reference` for a single method. See [experiments/code/README.md](experiments/code/README.md) for the schema.
-
-Outputs include stream metrics, seed means, sample SD, and 95% item-bootstrap intervals (4,000 draws). Seeds remain fixed: intervals measure item-sampling uncertainty, not training-seed uncertainty.
+The export rescores every prediction against the tracked test sets, averages each method over its seeds with sample SD, and computes AA, acquisition, F, BWT, ΔC, ΔC<sub>min</sub>, 95% item-bootstrap intervals (4,000 draws) and HERD's paired comparisons. A method left out of `runs.json` keeps empty rows. See [experiments/code/README.md](experiments/code/README.md) for the run layout and outputs.
 
 The repository does not include raw prediction archives, trained checkpoints, or full run archives; the website shows only the results reported in the paper. Runners and analysis write outputs locally. The reported results below come from the paper.
 
@@ -365,7 +364,7 @@ General-anchor training probes are disjoint from G-test. Main comparisons use th
 | [Dataset guide](datasets/trace-plus-17/README.md) | Sources, revisions, construction, and dataset terms |
 | [Stream runner](packages/hero-drift-constrained-opd/stream/README.md) | Prepare, train, score, and ablations |
 | [Baselines](packages/baselines/README.md) | Comparison methods, dependencies, and provenance |
-| [Analysis](experiments/code/README.md) | Scored-panel schema and statistical summaries |
+| [Results pipeline](experiments/code/README.md) | From your runs to the paper's tables and figures |
 | [Website](apps/official-website/README.md) | Interactive figures and local development |
 
 <details>
@@ -380,7 +379,7 @@ General-anchor training probes are disjoint from G-test. Main comparisons use th
 | [`packages/evaluator/`](packages/evaluator/) | Shared evaluation contracts and scorers |
 | [`packages/hero-data-preprocessing/`](packages/hero-data-preprocessing/) | Dataset construction tools |
 | [`config/datasets/`](config/datasets/), [`datasets/trace-plus-17/`](datasets/trace-plus-17/) | Dataset configurations and manifests |
-| [`experiments/code/`](experiments/code/) | Statistical analysis |
+| [`experiments/code/`](experiments/code/) | Results export, tables and figures |
 | [`apps/official-website/`](apps/official-website/) | Project website and source figures |
 
 </details>

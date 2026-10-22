@@ -1,0 +1,153 @@
+{
+ "base": {
+  "seeds": [
+   [
+    "base-tasks",
+    "base-general"
+   ]
+  ],
+  "hardware": "<GPU or device>"
+ },
+ "static-harness": {
+  "seeds": [
+   "static-harness"
+  ],
+  "hardware": "<GPU or device>"
+ },
+ "hcl-stable": {
+  "seeds": [
+   "hcl-stable-s42",
+   "hcl-stable-s43",
+   "hcl-stable-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "ace": {
+  "seeds": [
+   "ace-s42",
+   "ace-s43",
+   "ace-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "seq-lora": {
+  "seeds": [
+   "seq-lora-s42",
+   "seq-lora-s43",
+   "seq-lora-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "uniform-replay": {
+  "seeds": [
+   "uniform-replay-s42",
+   "uniform-replay-s43",
+   "uniform-replay-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "opr": {
+  "seeds": [
+   "opr-s42",
+   "opr-s43",
+   "opr-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "treelora": {
+  "seeds": [
+   "treelora-s42",
+   "treelora-s43",
+   "treelora-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "hero": {
+  "seeds": [
+   "hero-s42",
+   "hero-s43",
+   "hero-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "moram": {
+  "seeds": [
+   "moram-s42",
+   "moram-s43",
+   "moram-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "sdft": {
+  "seeds": [
+   "sdft-s42",
+   "sdft-s43",
+   "sdft-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "ophsd": {
+  "seeds": [
+   "ophsd-s42",
+   "ophsd-s43",
+   "ophsd-s44"
+  ],
+  "hardware": "<GPU>"
+ },
+ "hero-with-harness": {
+  "seeds": [
+   "hero-s42",
+   "hero-s43",
+   "hero-s44"
+  ],
+  "predictions": "test-predictions.harness.jsonl"
+ },
+ "no-harness": {
+  "seeds": [
+   "no-harness-s42"
+  ],
+  "hardware": "<GPU>"
+ },
+ "uniform-residual": {
+  "seeds": [
+   "uniform-residual-s42"
+  ],
+  "hardware": "<GPU>"
+ },
+ "no-checkpoint-anchor": {
+  "seeds": [
+   "no-checkpoint-anchor-s42"
+  ],
+  "hardware": "<GPU>"
+ },
+ "no-base-anchor": {
+  "seeds": [
+   "no-base-anchor-s42"
+  ],
+  "hardware": "<GPU>"
+ },
+ "no-anchors": {
+  "seeds": [
+   "no-anchors-s42"
+  ],
+  "hardware": "<GPU>"
+ },
+ "sft": {
+  "seeds": [
+   "sft-s42"
+  ],
+  "hardware": "<GPU>"
+ },
+ "drift-budget-tight": {
+  "seeds": [
+   "drift-budget-tight-s42"
+  ],
+  "hardware": "<GPU>"
+ },
+ "drift-budget-loose": {
+  "seeds": [
+   "drift-budget-loose-s42"
+  ],
+  "hardware": "<GPU>"
+ }
+}

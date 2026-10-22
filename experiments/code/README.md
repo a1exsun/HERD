@@ -1,34 +1,36 @@
-# Statistical analysis
+# Results pipeline
 
-`summarize.py` computes acquisition, AA, forgetting, signed BWT, G-test mean,
-mean general change and worst-category change. It reports means over supplied
-seeds, sample SD (null for one seed), and 95% percentile intervals from 4,000
-item-bootstrap draws. Resampling is within task/category and paired across
-stages, seeds and, when supplied, the comparison method. Seeds are kept fixed;
-these intervals describe item sampling, not uncertainty from training seeds.
+Turns your own runs into the paper's tables and figures. No results are shipped: every number comes from
+predictions you produce with the runners.
+
+1. Run each method with seeds 42, 43 and 44 (`--seed`), and HERD's ablations with seed 42
+   ([stream README](../../packages/hero-drift-constrained-opd/stream/README.md#ablations)); the "+ harness" row
+   re-scores the HERD runs with `stream --inference-harness`. The base model (`packages/baselines/base`, task and
+   G-test profiles) is required: it is stage 0 of every general-capability change.
+2. List the runs, relative to `experiments/runs`, in a copy of [`runs.example.json`](runs.example.json); a method
+   left out is reported as scheduled and its rows stay empty.
+3. Export, then draw:
 
 ```sh
-python3 experiments/code/summarize.py /path/scored-panels.json \
-  --reference /path/baseline-panels.json --output output/comparison.json
-python3 -m unittest discover -s experiments/code/tests
+uv run --project packages/evaluator/python python experiments/code/export-paper-experiments.py --runs runs.json
+for script in experiments/code/paper-*.py; do uv run --with matplotlib --with numpy python "$script"; done
 ```
 
-The input contains `taskOrder` (ordered task identifiers) and `runs` (one object
-per seed). Each run has `seed` and four panels:
+The export rescores every prediction against the test sets (checked against `datasets/`), averages each method
+over its seeds with sample standard deviations, and computes AA, acquisition, F, BWT, ΔC, ΔC_min, the 95% item
+bootstrap intervals (4,000 draws, within task and G-test category) and HERD's paired comparisons. It writes
+`experiments/outputs/` (ignored by Git); the scripts write `output/paper/tables/*.tex` and
+`output/paper/figures/*.pdf`.
 
-- `learned`: each task's scored test items immediately after learning it.
-- `final`: the same test items after the final stage.
-- `generalBase`: each G-test category's scored items under the base model.
-- `generalFinal`: the same full G-test items after the final stage.
+| File | Output |
+| --- | --- |
+| `registry.json` | Method ids, families, labels and ablation metadata |
+| `export-paper-experiments.py` | `experiments/outputs/` |
+| `paper-main-table.py`, `paper-comparison-table.py`, `paper-cost-table.py`, `paper-ablation-table.py` | Main results, paired comparisons, cost and ablation tables |
+| `paper-long-horizon-figure.py`, `paper-long-horizon-appendix-figure.py`, `paper-ablation-figure.py`, `paper-mechanism-figure.py`, `paper-task-matrix-figure.py` | Long-horizon, per-stage, ablation, mechanism and task-matrix figures |
 
-Each panel maps task/category identifiers to objects of `{item_id: score}`.
-Use the shared evaluator's `itemScores`, retaining failed predictions with score
-zero. Supply all 100 test items per task and all 200 per G-test category from
-runs built with the same dataset manifest. For controls, reuse the fixed
-predictor's task scores in both `learned` and `final`. Each run must use identical
-item identities; the reference method must match those identities and task order.
-The main experiment uses seeds 42, 43 and 44; a single-seed ablation is also accepted.
+`tests/test_export.py` runs the whole pipeline on a synthetic stream:
 
-This utility consumes already-scored panels. Prediction decoding and scoring
-remain in the method runners and shared evaluator. It does not load private
-archives, invent missing cells or modify source predictions.
+```sh
+uv run --project packages/evaluator/python --with matplotlib --with numpy --with pytest pytest experiments/code/tests
+```

@@ -44,8 +44,8 @@ scoring, GSM8K final-number scoring and IFEval strict verification are unchanged
 
 ## Test schedule
 
-Stage 0 evaluates the unchanged base model: all 25
-task test sets and the full G-test. After stage `t`:
+Stage 0 is the base model (`packages/baselines/base`): all 25 task test sets and
+the full G-test. After stage `t`:
 
 - the current task's test set is scored at every stage (the diagonal);
 - all seen tasks and the full G-test are scored at stages 4, 8, 16 and 25;
@@ -53,12 +53,13 @@ task test sets and the full G-test. After stage `t`:
 - the 200-item G probe is scored at every other stage.
 
 Each task cell uses all 100 test items. Decoding is greedy with thinking off,
-at most 5,120 new tokens and 16,384 input tokens, by vLLM 0.31.0 in bf16 on the
-evaluated (merged) checkpoint, with the model/tokenizer EOS union as stop tokens
-(each LoRA baseline package's `vllm_decode.py`). HERD and MoRAM decode with
-Transformers. Frozen methods use their documented MLX, MPS or vLLM backend. An input above the limit
-receives an empty prediction and stays in the denominator. Failures score zero
-and are counted separately; aggregates are recomputed from stored item records.
+at most 5,120 new tokens and 16,384 input tokens, with the model/tokenizer EOS
+union as stop tokens. LoRA baselines decode their merged checkpoints with vLLM
+0.31.0 (each package's own `vllm_decode.py`); HERD and MoRAM decode with
+Transformers (MoRAM's input-dependent routing cannot be merged into the
+weights); frozen-model methods use MLX, PyTorch's MPS backend or vLLM servers.
+An input above the limit receives an empty prediction and stays in the
+denominator. Failures score zero and are counted separately.
 
 ## Metrics
 
@@ -71,16 +72,17 @@ manifest metric. Task means weight every task equally.
 - Forgetting: `F = mean_{j<T} max(0, R[j,j] - R[T,j])`.
 - Signed BWT: `mean_{j<T} (R[T,j] - R[j,j])`.
 - General capability: the macro mean over the five categories per evaluated
-  panel, reported against stage 0.
+  panel. `ΔC` is the mean change of the five category scores after stage 25
+  against stage 0, and `ΔC_min` the worst category's change.
 
-Intervals are 95% item bootstraps (4,000 draws, resampled within task and
-G-test category and paired between methods). `code/summarize.py` computes final
-metrics, seed summaries and intervals from scored item panels. NumGLUE-cm's
-500/100/100 records include within-split resampling; the test panel is unchanged.
+Results are means over seeds 42, 43 and 44 with sample standard deviations.
+Intervals are 95% item bootstraps (4,000 draws), resampled within task and
+G-test category and paired between HERD and each baseline
+(`code/export-paper-experiments.py`). NumGLUE-cm's 500/100/100 records include
+within-split resampling; the test panel is unchanged.
 
 ## Execution
 
 Prepare a bundle and execute it through the HERD stream or the relevant
 baseline runner. HERD test predictions are scored locally with `run.py score`;
-test gold never leaves the local archive. Cluster submission is outside this
-repository's runtime.
+test gold never leaves the local archive.

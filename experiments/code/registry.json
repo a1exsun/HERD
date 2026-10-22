@@ -1,0 +1,190 @@
+[
+ {
+  "id": "base",
+  "family": "control",
+  "path": "baselines/base",
+  "short": "Base"
+ },
+ {
+  "id": "static-harness",
+  "family": "control",
+  "path": "baselines/static-harness",
+  "short": "Static harness"
+ },
+ {
+  "id": "hcl-stable",
+  "family": "non-parametric",
+  "path": "baselines/hcl-stable",
+  "short": "HCL-Stable",
+  "reference": "kang-etal-2026-hcl"
+ },
+ {
+  "id": "ace",
+  "family": "non-parametric",
+  "path": "baselines/ace",
+  "short": "ACE",
+  "reference": "zhang-etal-2026-ace"
+ },
+ {
+  "id": "seq-lora",
+  "family": "parametric",
+  "path": "baselines/seq-lora",
+  "short": "Seq-LoRA"
+ },
+ {
+  "id": "uniform-replay",
+  "family": "parametric",
+  "path": "baselines/uniform-replay",
+  "short": "Uniform replay"
+ },
+ {
+  "id": "opr",
+  "family": "parametric",
+  "path": "baselines/opr",
+  "short": "OPR",
+  "reference": "chen-etal-2026-opr"
+ },
+ {
+  "id": "treelora",
+  "family": "parametric",
+  "path": "baselines/treelora",
+  "short": "TreeLoRA",
+  "reference": "qian-etal-2025-treelora"
+ },
+ {
+  "id": "hero",
+  "family": "ours",
+  "path": "hero",
+  "short": "HERD"
+ },
+ {
+  "id": "moram",
+  "family": "parametric",
+  "path": "baselines/moram",
+  "short": "MoRAM",
+  "reference": "lu-etal-2026-moram"
+ },
+ {
+  "id": "sdft",
+  "family": "parametric",
+  "path": "baselines/sdft",
+  "short": "SDFT",
+  "reference": "shenfeld-etal-2026-sdft"
+ },
+ {
+  "id": "ophsd",
+  "family": "hybrid",
+  "path": "baselines/ophsd",
+  "short": "OPHSD",
+  "reference": "zhao-etal-2026-ophsd"
+ },
+ {
+  "id": "hero-with-harness",
+  "family": "ours",
+  "path": "ablations/hero-with-harness",
+  "short": "HERD+H",
+  "tier": "diagnostic",
+  "ablation": {
+   "parent": "hero",
+   "kind": "paired-inference"
+  }
+ },
+ {
+  "id": "no-harness",
+  "family": "ablation",
+  "path": "ablations/no-harness",
+  "short": "$-$ skills",
+  "tier": "core",
+  "ablation": {
+   "parent": "hero",
+   "kind": "component",
+   "component": "harness-evolution"
+  }
+ },
+ {
+  "id": "uniform-residual",
+  "family": "ablation",
+  "path": "ablations/uniform-residual",
+  "short": "uniform memory",
+  "tier": "core",
+  "ablation": {
+   "parent": "hero",
+   "kind": "component",
+   "component": "residual-selection"
+  }
+ },
+ {
+  "id": "no-checkpoint-anchor",
+  "family": "ablation",
+  "path": "ablations/no-checkpoint-anchor",
+  "short": "$-$ checkpoint anchor",
+  "tier": "core",
+  "ablation": {
+   "parent": "hero",
+   "kind": "component",
+   "component": "checkpoint-anchor"
+  }
+ },
+ {
+  "id": "no-base-anchor",
+  "family": "ablation",
+  "path": "ablations/no-base-anchor",
+  "short": "$-$ base anchor",
+  "tier": "core",
+  "ablation": {
+   "parent": "hero",
+   "kind": "component",
+   "component": "base-anchor"
+  }
+ },
+ {
+  "id": "no-anchors",
+  "family": "ablation",
+  "path": "ablations/no-anchors",
+  "short": "$-$ both anchors",
+  "tier": "core",
+  "ablation": {
+   "parent": "hero",
+   "kind": "component",
+   "component": "checkpoint-anchor"
+  }
+ },
+ {
+  "id": "sft",
+  "family": "ablation",
+  "path": "ablations/sft",
+  "short": "SFT objective",
+  "tier": "optional",
+  "ablation": {
+   "parent": "hero",
+   "kind": "component",
+   "component": "distillation-objective"
+  }
+ },
+ {
+  "id": "drift-budget-tight",
+  "family": "ablation",
+  "path": "ablations/drift-budget-tight",
+  "short": "$\\varepsilon_C$ $=$ 0.02",
+  "tier": "optional",
+  "ablation": {
+   "parent": "hero",
+   "kind": "sweep",
+   "parameter": "training.checkpoint_budget",
+   "value": 0.02
+  }
+ },
+ {
+  "id": "drift-budget-loose",
+  "family": "ablation",
+  "path": "ablations/drift-budget-loose",
+  "short": "$\\varepsilon_C$ $=$ 0.1",
+  "tier": "optional",
+  "ablation": {
+   "parent": "hero",
+   "kind": "sweep",
+   "parameter": "training.checkpoint_budget",
+   "value": 0.1
+  }
+ }
+]

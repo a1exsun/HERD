@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc -b && pnpm --filter @hero/console build",
     "check": "pnpm build && pnpm test && pnpm eval:test && pnpm opd:test && pnpm opd:validate && pnpm analysis:test",
-    "analysis:test": "python3 -m unittest discover -s experiments/code/tests && python3 -m unittest discover -s scripts/tests",
+    "analysis:test": "uv run --project packages/evaluator/python --with matplotlib --with numpy --with pytest pytest experiments/code/tests && python3 -m unittest discover -s scripts/tests",
     "check:integration": "pnpm model:smoke && pnpm dsh:smoke",
     "eval:test": "uv run --locked --project packages/evaluator/python --python 3.12 pytest packages/evaluator/python/tests",
     "dataset:select": "pnpm --filter @hero/data-preprocessing build && node packages/hero-data-preprocessing/dist/cli.js --config config/datasets/trace-plus-17.json",

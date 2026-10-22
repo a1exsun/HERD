@@ -45,6 +45,11 @@ def main() -> None:
     hero = read(OUT / "hero/results.json")
     comparisons = hero["comparisons"]
     by_id = {m["id"]: m for m in comparisons["methods"]}
+    missing = [entry["id"] for entry in registry
+               if "tier" not in entry and entry["id"] != "hero" and entry["id"] not in by_id
+               and (OUT / entry["path"] / "results.json").is_file()]
+    if missing:
+        raise SystemExit(f"hero/results.json has no paired comparison for {missing}")
     rows = []
     for entry in registry:
         if entry["id"] not in by_id:

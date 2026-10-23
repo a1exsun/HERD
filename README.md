@@ -1,7 +1,5 @@
 <div align="center">
 
-# HERD
-
 <p align="center">
   <a href="https://a1exsun.github.io/HERD/#top">
     <picture>
@@ -19,6 +17,11 @@
 </p>
 
 </div>
+
+<blockquote>
+  <p><strong>Note</strong>: this repository is under active development. The original code for the paper is on the
+  <a href="https://github.com/a1exsun/HERD/tree/arr"><code>arr</code></a> branch.</p>
+</blockquote>
 
 HERD is a hybrid continual learning framework for language models: it learns efficiently in an external **harness** and internalizes that experience into the **weights** by distillation. On the harness side, it refines skills that capture reusable patterns and keeps, in a bounded memory, the high-residual examples the skills miss. On the parameter side, drift-constrained distillation with dual anchors, the previous checkpoint for per-stage drift and the base model for cumulative drift, reduces forgetting over long recursive runs. At deployment, **the weights run on their own**, without the skill registry or memory in the prompt.
 

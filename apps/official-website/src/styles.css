@@ -637,10 +637,19 @@ input {
 
 .abstract-video {
   display: block;
-  width: 100%;
+  float: right;
+  width: min(44%, 480px);
   aspect-ratio: 16 / 9;
-  margin-top: clamp(28px, 4vw, 48px);
+  margin: 0.4em 0 16px clamp(20px, 3vw, 36px);
   background: #000;
+}
+
+@media (max-width: 760px) {
+  .abstract-video {
+    float: none;
+    width: 100%;
+    margin: 0 0 20px;
+  }
 }
 
 /* ------------------------------------------------------------ figures */

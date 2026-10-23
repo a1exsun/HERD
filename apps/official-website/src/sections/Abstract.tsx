@@ -5,6 +5,16 @@ export function Abstract() {
     <section className="section" id="abstract">
       <div className="wrap">
         <h2 className="section-title reveal">Abstract</h2>
+        {/* Floated ahead of the text so the abstract wraps around it. Same asset as the README; GitHub redirects it to a fresh signed URL on every request. */}
+        <video
+          className="fig abstract-video reveal"
+          src="https://github.com/user-attachments/assets/48121e37-5e83-4594-b6e9-8bad2563087c"
+          poster="video-poster.jpg"
+          controls
+          playsInline
+          preload="metadata"
+          aria-label="HERD overview video"
+        />
         <p className="abstract-text reveal">
           Continual learning requires a model to keep acquiring new skills and knowledge without compromising its
           existing capabilities. Parametric methods suffer from catastrophic forgetting and loss of plasticity.
@@ -22,16 +32,6 @@ export function Abstract() {
           HERD matches the strongest parametric baseline in new-task acquisition while exhibiting the least forgetting
           and the strongest retention of general capabilities.
         </p>
-        {/* Same asset as the README; GitHub redirects it to a fresh signed URL on every request. */}
-        <video
-          className="fig abstract-video reveal"
-          src="https://github.com/user-attachments/assets/48121e37-5e83-4594-b6e9-8bad2563087c"
-          poster="video-poster.jpg"
-          controls
-          playsInline
-          preload="metadata"
-          aria-label="HERD overview video"
-        />
       </div>
     </section>
   )

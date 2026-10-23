@@ -635,6 +635,14 @@ input {
   box-shadow: inset 0 -0.45em 0 var(--mark, var(--harness-soft));
 }
 
+.abstract-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-top: clamp(28px, 4vw, 48px);
+  background: #000;
+}
+
 /* ------------------------------------------------------------ figures */
 
 .fig {

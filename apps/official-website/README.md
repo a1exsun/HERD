@@ -30,7 +30,7 @@ reading, and moves to the next scene on a click. Figures marked "Schematic" use 
 ## Paper alignment
 
 The text, notation and reported results follow the final version of the paper in `herd-paper/`. The page does
-not bundle the PDF; the Paper button points to arXiv once the preprint is posted.
+not bundle the PDF; the arXiv button links to the paper (https://arxiv.org/abs/2610.31401).
 
 - `data/paper-results.json` holds only what the paper's main text reports: Table 1, the Figure 3 long-horizon
   series and the Figure 4 ablations. Table 1 and Figure 4 are parsed from

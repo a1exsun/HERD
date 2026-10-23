@@ -2,8 +2,6 @@
 
 # HERD
 
-**Harness-Evolving Recursive Distillation for Continual Learning**
-
 <p align="center">
   <a href="https://a1exsun.github.io/HERD/#top">
     <picture>
@@ -12,23 +10,21 @@
       <img src="public/readme/banner-light.svg" width="100%" alt="HERD: Learn in the harness. Internalize in the weights.">
     </picture>
   </a>
-  <br><sub>An evolving harness for learning. The weights alone for deployment.</sub>
 </p>
 
 <p>
   <a href="https://a1exsun.github.io/HERD/"><strong>Project website ↗</strong></a> &nbsp;·&nbsp;
-  <strong>Paper: arXiv link coming soon</strong> &nbsp;·&nbsp;
-  <a href="https://a1exsun.github.io/HERD/#method"><strong>Interactive demos ↗</strong></a> &nbsp;·&nbsp;
+  <a href="https://arxiv.org/abs/2610.31401"><strong>Paper (arXiv) ↗</strong></a> &nbsp;·&nbsp;
   <a href="#getting-started"><strong>Get started ↓</strong></a>
 </p>
-<p><sub>Qwen3.5-4B &nbsp; / &nbsp; TRACE+17 &nbsp; / &nbsp; 25 sequential tasks</sub></p>
 
 </div>
 
 HERD is a hybrid continual learning framework for language models: it learns efficiently in an external **harness** and internalizes that experience into the **weights** by distillation. On the harness side, it refines skills that capture reusable patterns and keeps, in a bounded memory, the high-residual examples the skills miss. On the parameter side, drift-constrained distillation with dual anchors, the previous checkpoint for per-stage drift and the base model for cumulative drift, reduces forgetting over long recursive runs. At deployment, **the weights run on their own**, without the skill registry or memory in the prompt.
 
+https://github.com/user-attachments/assets/48121e37-5e83-4594-b6e9-8bad2563087c
+
 <p align="center">
-  <a href="#see-herd-in-action">Demos</a> &nbsp;·&nbsp;
   <a href="#how-it-works">How it works</a> &nbsp;·&nbsp;
   <a href="#getting-started">Quick start</a> &nbsp;·&nbsp;
   <a href="#results">Results</a> &nbsp;·&nbsp;
@@ -44,9 +40,7 @@ HERD is a hybrid continual learning framework for language models: it learns eff
   </tr>
 </table>
 
-## See HERD in action
-
-https://github.com/user-attachments/assets/48121e37-5e83-4594-b6e9-8bad2563087c
+## How it works
 
 <p align="center">
   <a href="https://a1exsun.github.io/HERD/#top">
@@ -58,9 +52,6 @@ https://github.com/user-attachments/assets/48121e37-5e83-4594-b6e9-8bad2563087c
   </a>
   <br><sub>Schematic · Reuses the website’s animated task-stream figure. Click to explore the live version.</sub>
 </p>
-
-
-## How it works
 
 <table>
   <tr><th align="left">① Evolve the harness</th><th align="left">② Distill with two anchors</th></tr>
@@ -128,7 +119,7 @@ Distillation minimizes token-averaged forward KL from teacher to student on veri
 
 Each anchor measures the **worst group's mean KL** over the first 32 greedy response tokens. Checkpoint probes are grouped by task; general probes are grouped by source. Both budgets are 0.05, and dual ascent adjusts their multipliers. These probe constraints do not guarantee zero forgetting.
 
-See the paper (arXiv link coming soon) and the [stream runner guide](packages/hero-drift-constrained-opd/stream/README.md) for the objective and execution details.
+See the [paper](https://arxiv.org/abs/2610.31401) and the [stream runner guide](packages/hero-drift-constrained-opd/stream/README.md) for the objective and execution details.
 
 </details>
 
@@ -361,7 +352,7 @@ General-anchor training probes are disjoint from G-test. Main comparisons use th
 
 | Start here | What you will find |
 | --- | --- |
-| Paper (arXiv link coming soon) | Method, evaluation, ablations, and limitations |
+| [Paper](https://arxiv.org/abs/2610.31401) | Method, evaluation, ablations, and limitations |
 | [Experiment protocol](experiments/protocol.md) | Task stream, budgets, metrics, and evaluation schedule |
 | [Dataset guide](datasets/trace-plus-17/README.md) | Sources, revisions, construction, and dataset terms |
 | [Stream runner](packages/hero-drift-constrained-opd/stream/README.md) | Prepare, train, score, and ablations |
@@ -418,13 +409,8 @@ If HERD informs your work, please cite the paper:
   title  = {HERD: Harness-Evolving Recursive Distillation for Continual Learning},
   author = {Sun, Xun and Nguyen, Thanh Thi and Vu, Thuy-Trang},
   year   = {2026},
-  note   = {Preprint},
-  url    = {https://a1exsun.github.io/HERD/}
+  eprint = {2610.31401},
+  archivePrefix = {arXiv},
+  url    = {https://arxiv.org/abs/2610.31401}
 }
 ```
-
-## License and attribution
-
-This repository does not currently declare a project-wide license. Third-party code and datasets retain their original terms; consult the [baseline provenance](packages/baselines/README.md), [dataset guide](datasets/trace-plus-17/README.md), component license files, and `UPSTREAM.json` records before reuse.
-
-<p align="center"><a href="https://a1exsun.github.io/HERD/"><strong>Explore HERD on the project website ↗</strong></a></p>

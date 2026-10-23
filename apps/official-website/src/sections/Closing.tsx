@@ -4,8 +4,9 @@ const BIBTEX = `@misc{sun2026herd,
   title  = {HERD: Harness-Evolving Recursive Distillation for Continual Learning},
   author = {Sun, Xun and Nguyen, Thanh Thi and Vu, Thuy-Trang},
   year   = {2026},
-  note   = {Preprint},
-  url    = {https://a1exsun.github.io/HERD/}
+  eprint = {2610.31401},
+  archivePrefix = {arXiv},
+  url    = {https://arxiv.org/abs/2610.31401}
 }`
 
 export function Cite() {

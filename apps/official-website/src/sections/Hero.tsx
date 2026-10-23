@@ -101,8 +101,8 @@ export function Hero() {
                   />
                 </svg>
               </a>
-              <span className="btn" aria-disabled="true">Paper · arXiv soon</span>
-              <a className="btn" href="https://github.com/a1exsun/HERD" target="_blank" rel="noreferrer">Code</a>
+              <a className="btn" href="https://arxiv.org/abs/2610.31401" target="_blank" rel="noreferrer">arXiv</a>
+              <a className="btn" href="https://github.com/a1exsun/HERD" target="_blank" rel="noreferrer">GitHub</a>
             </div>
           </div>
         </div>

@@ -46,6 +46,8 @@ HERD is a hybrid continual learning framework for language models: it learns eff
 
 ## See HERD in action
 
+https://github.com/user-attachments/assets/48121e37-5e83-4594-b6e9-8bad2563087c
+
 <p align="center">
   <a href="https://a1exsun.github.io/HERD/#top">
     <picture>
